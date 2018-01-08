@@ -8,15 +8,24 @@
 //------------------------------------------------------------------------------
 public static class GameComponentsLookup {
 
+    public const int Fire = 0;
+    public const int Health = 1;
+    public const int Name = 2;
+    public const int Position2D = 3;
 
-
-    public const int TotalComponents = 0;
+    public const int TotalComponents = 4;
 
     public static readonly string[] componentNames = {
-
+        "Fire",
+        "Health",
+        "Name",
+        "Position2D"
     };
 
     public static readonly System.Type[] componentTypes = {
-
+        typeof(Fire),
+        typeof(Health),
+        typeof(Name),
+        typeof(Position2D)
     };
 }
