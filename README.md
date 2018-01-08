@@ -1,6 +1,5 @@
 # EntitasSaveLoader v0.1
-Entitas add on. easy save loader
-can save/load entity and component info in runtime
+can save/load entity and components info in runtime
 
 ## install
 1. go to asset store, install Json.Net.
