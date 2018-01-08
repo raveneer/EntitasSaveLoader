@@ -1,21 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using Entitas;
-using NUnit.Framework;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using UnityEngine;
-using Debug = System.Diagnostics.Debug;
+﻿using NUnit.Framework;
 
 namespace UnitTestProject
 {
-    class Test_ComponentParser
+    class Test_EntityJsonUtility
     {
-
-        /*[Test]
+        [Test]
         public void Entitas_AddComponent_NeedContext()
         {
             Contexts contexts = new Contexts();
@@ -90,7 +79,6 @@ namespace UnitTestProject
             Assert.AreEqual(expected, resultJson);
         }
      
-    */
     }
 
 }

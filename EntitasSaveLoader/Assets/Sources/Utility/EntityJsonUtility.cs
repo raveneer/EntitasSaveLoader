@@ -8,7 +8,7 @@ namespace UnitTestProject
 {
     public class EntityJsonUtility
     {
-      /*  public static Entity MakeNewEntity(string json, Contexts contexts)
+        public static Entity MakeNewEntity(string json, Contexts contexts)
         {
             if (string.IsNullOrWhiteSpace(json))
             {
@@ -42,7 +42,7 @@ namespace UnitTestProject
                     newEntity = contexts.input.CreateEntity();
                     break;
                 case "Ui":
-                    newEntity = contexts.ui.CreateEntity();#1#
+                    newEntity = contexts.ui.CreateEntity();*/
                     break;
                 default:
                     throw new Exception("not support type");
@@ -71,6 +71,6 @@ namespace UnitTestProject
         {
             public string ContextType;
             public List<string> ComponentsWrapperJsons = new List<string>();
-        }*/
+        }
     }
 }

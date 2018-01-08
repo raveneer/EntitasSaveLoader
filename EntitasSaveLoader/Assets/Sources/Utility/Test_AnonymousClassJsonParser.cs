@@ -41,9 +41,8 @@ namespace UnitTestProject
             Assert.AreEqual(fido.BitePower, ((SomeDog) newComponent).BitePower);
         }
 
-        [Timeout(500)]
+        [Timeout(1000)]
         [Test]
-        [Ignore("1만개에 500ms 정도로 매우 빠름.")]
         public void Performance_Serialize()
         {
             var fido = new SomeDog {BitePower = 10};
@@ -54,9 +53,8 @@ namespace UnitTestProject
         }
 
 
-        [Timeout(300)]
+        [Timeout(1000)]
         [Test]
-        [Ignore("1만개에 300ms 정도로 매우 빠름.")]
         public void Performance_DeSerialize()
         {
             var jsonString = @"{""TypeName"":""UnitTestProject.SomeCat"",""Json"":""{\""ScratchPower\"":5.0}""}";

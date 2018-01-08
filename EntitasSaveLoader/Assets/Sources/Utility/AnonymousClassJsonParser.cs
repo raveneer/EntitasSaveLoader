@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using Newtonsoft.Json;
 
-
 /// <summary>
 ///     json.net 을 사용함. 객체를 래퍼로 래핑하여 타입과 json 정보를 함께 저장한다.
 ///     리플렉션을 이용하여 클래스를 만든다. 따라서 클래스 타입이 어셈블리에 있다면 생성되고 없으면 실패한다.

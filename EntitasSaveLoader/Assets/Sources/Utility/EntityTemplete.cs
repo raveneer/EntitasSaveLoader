@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-public class EntityStyleInfo : ScriptableObject
+public class EntityTemplete : ScriptableObject
 {
-    public string EntityStyleName;
+    public string TempleteName;
     public string Json;
     
 }

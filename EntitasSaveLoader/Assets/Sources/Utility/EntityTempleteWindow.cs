@@ -4,17 +4,17 @@ using UnitTestProject;
 using UnityEditor;
 using UnityEngine;
 
-public class EntityStyleWindow : EditorWindow
+public class EntityTempleteSaveLoadWindow : EditorWindow
 {
-   /* private string _assetNameForSave = "";
+    private string _assetNameForSave = "";
     private string _assetNameForLoad = "";
     private string _selectedEntity = "";
     private IEntity _entity;
 
-    [MenuItem("Tools/Entity Style Save Loader")]
+    [MenuItem("Tools/Entity Templete Save Loader")]
     public static void ShowWindow()
     {
-        EditorWindow.GetWindow(typeof(EntityStyleWindow));
+        EditorWindow.GetWindow(typeof(EntityTempleteSaveLoadWindow));
     }
 
     void OnGUI()
@@ -32,31 +32,31 @@ public class EntityStyleWindow : EditorWindow
         }
         
         //현재 선택된 엔티티를 이름짓고 어셋으로 저장할 수 있다.- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        _assetNameForSave = EditorGUILayout.TextField("Name of save entityStyle:", _assetNameForSave);
+        _assetNameForSave = EditorGUILayout.TextField("Name of templete to save:", _assetNameForSave);
 
-        if (GUILayout.Button("Save EntityStyle to scriptableObject"))
+        if (GUILayout.Button("Save EntityTemplete to asset"))
         {
             if (_entity != null)
             {
-                EntityStyleInfo asset = ScriptableObject.CreateInstance<EntityStyleInfo>();
-                asset.EntityStyleName = _assetNameForSave;
+                EntityTemplete asset = ScriptableObject.CreateInstance<EntityTemplete>();
+                asset.TempleteName = _assetNameForSave;
                 asset.Json = EntityJsonUtility.MakeEntityInfoJson(_entity);
-                AssetDatabase.CreateAsset(asset, $"Assets/Resources/EntityStyleAsset/{_assetNameForSave}.asset");
+                AssetDatabase.CreateAsset(asset, $"Assets/Resources/EntityTemplete/{_assetNameForSave}.asset");
                 AssetDatabase.SaveAssets();
 
-                Debug.Log($"{_assetNameForSave} entityStyle asset created!");
+                Debug.Log($"{_assetNameForSave} EntityTemplete asset created!");
             }
         }
 
 
-        GUILayout.Label("Make new Entity wity style", EditorStyles.boldLabel);
+        GUILayout.Label("Make new Entity from templete", EditorStyles.boldLabel);
 
         //스크립터블 오브젝트 어셋을 이용해서 엔티티를 생성할 수 있다.- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        _assetNameForLoad = EditorGUILayout.TextField("entityStyle Name :", _assetNameForLoad);
+        _assetNameForLoad = EditorGUILayout.TextField("Templete Name :", _assetNameForLoad);
 
         if (GUILayout.Button("Make new Entity!"))
         {
-            EntityStyleInfo asset = AssetDatabase.LoadAssetAtPath<EntityStyleInfo>($"Assets/Resources/EntityStyleAsset/{_assetNameForLoad}.asset");
+            EntityTemplete asset = AssetDatabase.LoadAssetAtPath<EntityTemplete>($"Assets/Resources/EntityTemplete/{_assetNameForLoad}.asset");
             EntityJsonUtility.MakeNewEntity(asset.Json, Contexts.sharedInstance);
 
             Debug.Log($"{_assetNameForLoad} entity created!");
@@ -71,5 +71,5 @@ public class EntityStyleWindow : EditorWindow
             _assetNameForLoad = "";
             _selectedEntity = "";
         }
-    }*/
+    }
 }
