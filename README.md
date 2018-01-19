@@ -1,4 +1,4 @@
-# EntitasSaveLoader v0.1
+# EntitasSaveLoader v0.2
 can save/load entity and components info in runtime
 
 https://www.youtube.com/watch?v=w8IwLh8ct50&feature=youtu.be
