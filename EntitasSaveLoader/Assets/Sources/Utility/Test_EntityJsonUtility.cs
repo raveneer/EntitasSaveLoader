@@ -23,7 +23,7 @@ internal class Test_EntityJsonUtility
         var json =
             @"{""ContextType"":""Game"",""ComponentsWrapperJsons"":[""{\""TypeName\"":\""SomeIntComponent\"",\""Json\"":\""{\\\""Value\\\"":10}\""}"",""{\""TypeName\"":\""SomeIntComponent\"",\""Json\"":\""{\\\""Value\\\"":20}\""}""]}";
         //action
-        var newEntity = EntityJsonUtility.MakeNewEntity(json, contexts);
+        var newEntity = EntitySaveLoader.MakeNewEntity(json, contexts);
         //assert
         Assert.AreEqual(2, newEntity.GetComponents().Length);
         Assert.AreEqual("Game", newEntity.contextInfo.name);
@@ -42,7 +42,7 @@ internal class Test_EntityJsonUtility
         entity.AddComponent(0, c1);
         entity.AddComponent(1, c2);
         //action
-        var resultJson = EntityJsonUtility.MakeEntityInfoJson(entity, Formatting.None);
+        var resultJson = EntitySaveLoader.MakeEntityInfoJson(entity, Formatting.None);
         //assert
         var expected =
             @"{""ContextType"":""Game"",""ComponentsWrapperJsons"":[""{\""TypeName\"":\""SomeIntComponent\"",\""Json\"":\""{\\\""Value\\\"":10}\""}"",""{\""TypeName\"":\""SomeIntComponent\"",\""Json\"":\""{\\\""Value\\\"":20}\""}""]}";
@@ -58,7 +58,7 @@ internal class Test_EntityJsonUtility
         var c1 = new SomeBoolComponent {Value = true};
         entity.AddComponent(0, c1);
         //action
-        var resultJson = EntityJsonUtility.MakeEntityInfoJson(entity, Formatting.None);
+        var resultJson = EntitySaveLoader.MakeEntityInfoJson(entity, Formatting.None);
         //assert
         var expected =
             @"{""ContextType"":""Input"",""ComponentsWrapperJsons"":[""{\""TypeName\"":\""SomeBoolComponent\"",\""Json\"":\""{\\\""Value\\\"":true}\""}""]}";
@@ -72,7 +72,7 @@ internal class Test_EntityJsonUtility
         var contexts = new Contexts();
         var entity = contexts.input.CreateEntity();
         //action
-        var resultJson = EntityJsonUtility.MakeEntityInfoJson(entity, Formatting.None);
+        var resultJson = EntitySaveLoader.MakeEntityInfoJson(entity, Formatting.None);
         //assert
         var expected =
             @"{""ContextType"":""Input"",""ComponentsWrapperJsons"":[]}";

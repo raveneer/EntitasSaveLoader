@@ -9,6 +9,9 @@ public class EntityTempleteSaveLoadWindow : EditorWindow
     private string _assetNameForSave = "";
     private string _assetNameForLoad = "";
     private string _selectedEntity = "";
+    private string _saveFileName = "";
+    private string _loadFileName = "";
+
     private IEntity _entity;
 
     [MenuItem("Tools/Entity Templete Save Loader")]
@@ -44,9 +47,9 @@ public class EntityTempleteSaveLoadWindow : EditorWindow
             {
                 var asset = CreateInstance<EntityTemplete>();
                 asset.TempleteName = _assetNameForSave;
-                EntityJsonUtility.EntityInfoWriteToFile(_entity, _assetNameForSave);
+                EntitySaveLoader.EntityInfoWriteToFile(_entity, _assetNameForSave);
                 AssetDatabase.Refresh();
-                EntityJsonUtility.ReloadTempletesFromResource();
+                EntitySaveLoader.ReloadTempletesFromResource();
                 Debug.Log($"{_assetNameForSave} EntityTemplete text file created!");
             }
         }
@@ -61,10 +64,26 @@ public class EntityTempleteSaveLoadWindow : EditorWindow
 
         if (GUILayout.Button("Make new entity!"))
         {
-            EntityJsonUtility.MakeEntityFromTemplete(_assetNameForLoad, Contexts.sharedInstance);
+            EntitySaveLoader.MakeEntityFromTemplete(_assetNameForLoad, Contexts.sharedInstance);
         }
 
         #endregion
+
+        GUILayout.Label("Save All Entities (have savingData) ", EditorStyles.boldLabel);
+        _saveFileName = EditorGUILayout.TextField("saveFileName:", _saveFileName);
+        if (GUILayout.Button("Save all"))
+        {
+            EntitySaveLoader.SaveEntitiesInScene(Contexts.sharedInstance, _saveFileName);
+            AssetDatabase.Refresh();
+        }
+
+        GUILayout.Label("Load Save Entities (have savingData) ", EditorStyles.boldLabel);
+        _loadFileName = EditorGUILayout.TextField("loadFileName:", _loadFileName);
+        if (GUILayout.Button("Load all"))
+        {
+            EntitySaveLoader.LoadEntitiesFromSaveFile(Contexts.sharedInstance, _loadFileName);
+        }
+
 
         GUILayout.Label("Reset", EditorStyles.boldLabel);
 
@@ -91,7 +110,7 @@ public class EntityTempleteSaveLoadWindow : EditorWindow
             {
                 var asset = CreateInstance<EntityTemplete>();
                 asset.TempleteName = _assetNameForSave;
-                asset.Json = EntityJsonUtility.MakeEntityInfoJson(_entity, Formatting.None);
+                asset.Json = EntitySaveLoader.MakeEntityInfoJson(_entity, Formatting.None);
                 AssetDatabase.CreateAsset(asset, $"Assets/Resources/EntityTemplete/{_assetNameForSave}.asset");
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
@@ -107,7 +126,7 @@ public class EntityTempleteSaveLoadWindow : EditorWindow
         {
             var asset = AssetDatabase.LoadAssetAtPath<EntityTemplete>($"Assets/Resources/EntityTemplete/{_assetNameForLoad}.asset");
             //Debug.Log(asset.Json);
-            EntityJsonUtility.MakeNewEntity(asset.Json, Contexts.sharedInstance);
+            EntitySaveLoader.MakeNewEntity(asset.Json, Contexts.sharedInstance);
             Debug.Log($"{_assetNameForLoad} entity created!");
         }
 

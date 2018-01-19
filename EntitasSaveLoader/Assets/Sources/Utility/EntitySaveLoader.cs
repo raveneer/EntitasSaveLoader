@@ -4,15 +4,65 @@ using System.IO;
 using Entitas;
 using EntityTempleteSaveLoader;
 using Newtonsoft.Json;
-using UnityEditor;
 using UnityEngine;
-using Debug = System.Diagnostics.Debug;
 
-public class EntityJsonUtility
+public class EntitySaveLoader
 {
     private static  Dictionary<string, string> _templetDictionary = new Dictionary<string, string>();
     private static bool _dictionaryReady;
     
+
+    public static void SaveEntitiesInScene(Contexts contexts, string saveFileName)
+    {
+        var savingEntities = contexts.game.GetGroup(GameMatcher.SavingData).GetEntities();
+
+        EntitiesSaveData saveData = new EntitiesSaveData();
+
+        Debug.Log($"saving entities : {savingEntities.Length}");
+        foreach (var savingEntity in savingEntities)
+        {
+            saveData.EntityInfoJsons.Add(MakeEntityInfoJson(savingEntity, Formatting.None));
+        }
+
+        string json = JsonConvert.SerializeObject(saveData, Formatting.Indented);
+        string path = $"Assets/Resources/EntityTemplete/{saveFileName}.json";
+
+        if (!File.Exists(path))
+        {
+            File.Create(path).Close();
+        }
+
+        File.WriteAllText(path, json);
+
+        Debug.Log("SaveEntitiesInScene done!");
+    }
+
+    public static void LoadEntitiesFromSaveFile(Contexts contexts, string saveFileName)
+    {
+        //파일을 읽어온다.
+        var saveFileAsset = Resources.Load<TextAsset>($"EntityTemplete/{saveFileName}");
+
+        Debug.Log($" {saveFileAsset.name}, {saveFileAsset.text}");
+
+        if (saveFileAsset.text == null)
+        {
+            Debug.Log($"no save file : {saveFileName}");
+            return;
+        }
+
+        //파일을 saveData로 디시리얼.
+        EntitiesSaveData saveData = JsonConvert.DeserializeObject<EntitiesSaveData>(saveFileAsset.text);
+        //saveData의 데이터 리스트를 다시 엔티티인포로 디시리얼.
+        foreach (var infoJson in saveData.EntityInfoJsons)
+        {
+            Debug.Log($"saved entities : {saveData.EntityInfoJsons.Count}");
+            //엔티티인포들을 이용해서 엔티티를 생성한다.
+            MakeNewEntity(infoJson, contexts);
+        }
+
+        Debug.Log("LoadEntitiesFromSaveFile done!");
+    }
+
 
     public static void ReloadTempletesFromResource()
     {
@@ -55,7 +105,6 @@ public class EntityJsonUtility
     {
         if (string.IsNullOrWhiteSpace(json))
         {
-            Debug.WriteLine("json null!");
             throw new Exception();
         }
 
@@ -128,6 +177,11 @@ public class EntityJsonUtility
     {
         public string ContextType;
         public List<string> ComponentsWrapperJsons = new List<string>();
+    }
+
+    public class EntitiesSaveData
+    {
+        public List<string> EntityInfoJsons = new List<string>();
     }
 
 }
