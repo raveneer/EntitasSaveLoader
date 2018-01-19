@@ -1,0 +1,16 @@
+{
+  "ContextType": "Game",
+  "ComponentsWrapperJsons": [
+    "{\"TypeName\":\"Fire\",\"Json\":\"{\\\"Strength\\\":0.0}\"}",
+    "{\"TypeName\":\"Name\",\"Json\":\"{\\\"Value\\\":\\\"aaav\\\"}\"}",
+    "{\"TypeName\":\"Position2D\",\"Json\":\"{\\\"X\\\":15.0,\\\"Y\\\":0.0}\"}"
+  ]
+}
+{
+  "ContextType": "Game",
+  "ComponentsWrapperJsons": [
+    "{\"TypeName\":\"Fire\",\"Json\":\"{\\\"Strength\\\":0.0}\"}",
+    "{\"TypeName\":\"Name\",\"Json\":\"{\\\"Value\\\":\\\"aaav\\\"}\"}",
+    "{\"TypeName\":\"Position2D\",\"Json\":\"{\\\"X\\\":15.0,\\\"Y\\\":0.0}\"}"
+  ]
+}

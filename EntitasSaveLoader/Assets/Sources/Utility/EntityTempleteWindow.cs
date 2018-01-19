@@ -1,5 +1,6 @@
 ﻿using Entitas;
 using Entitas.VisualDebugging.Unity;
+using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
 
@@ -40,7 +41,7 @@ public class EntityTempleteSaveLoadWindow : EditorWindow
             {
                 EntityTemplete asset = ScriptableObject.CreateInstance<EntityTemplete>();
                 asset.TempleteName = _assetNameForSave;
-                asset.Json = EntityJsonUtility.MakeEntityInfoJson(_entity);
+                asset.Json = EntityJsonUtility.MakeEntityInfoJson(_entity, Formatting.None);
                 AssetDatabase.CreateAsset(asset, $"Assets/Resources/EntityTemplete/{_assetNameForSave}.asset");
                 AssetDatabase.SaveAssets();
 
@@ -48,6 +49,20 @@ public class EntityTempleteSaveLoadWindow : EditorWindow
             }
         }
 
+        //현재 선택된 엔티티를 이름짓고 파일로 저장할 수 있다.- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        _assetNameForSave = EditorGUILayout.TextField("Name of templete to save:", _assetNameForSave);
+
+        if (GUILayout.Button("Save EntityTemplete to text"))
+        {
+            if (_entity != null)
+            {
+                EntityTemplete asset = ScriptableObject.CreateInstance<EntityTemplete>();
+                asset.TempleteName = _assetNameForSave;
+                EntityJsonUtility.EntityInfoWriteToFile(_entity, _assetNameForSave);
+
+                Debug.Log($"{_assetNameForSave} EntityTemplete text file created!");
+            }
+        }
 
         GUILayout.Label("Make new Entity from templete", EditorStyles.boldLabel);
 

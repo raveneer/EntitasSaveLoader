@@ -1,0 +1,14 @@
+{
+  "ContextType": "Game",
+  "ComponentsWrapperJsons": [
+    "{\"TypeName\":\"Fire\",\"Json\":\"{\\\"Strength\\\":10.0}\"}",
+    "{\"TypeName\":\"Health\",\"Json\":\"{\\\"Value\\\":999.0}\"}",
+    "{\"TypeName\":\"Name\",\"Json\":\"{\\\"Value\\\":\\\"abcd\\\"}\"}",
+    "{\"TypeName\":\"Position2D\",\"Json\":\"{\\\"X\\\":55.0,\\\"Y\\\":77.0}\"}",
+    "{\"TypeName\":\"SomeBoolComponent\",\"Json\":\"{\\\"Value\\\":true}\"}",
+    "{\"TypeName\":\"SomeEnumComponent\",\"Json\":\"{\\\"Value\\\":1}\"}",
+    "{\"TypeName\":\"SomeFloatComponent\",\"Json\":\"{\\\"Value\\\":55.0}\"}",
+    "{\"TypeName\":\"SomeIntComponent\",\"Json\":\"{\\\"Value\\\":99}\"}",
+    "{\"TypeName\":\"SomeStringComponent\",\"Json\":\"{\\\"Value\\\":\\\"aaa\\\"}\"}"
+  ]
+}

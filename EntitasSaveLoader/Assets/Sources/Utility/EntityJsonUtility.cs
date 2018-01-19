@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.IO;
 using Entitas;
 using EntityTempleteSaveLoader;
 using Newtonsoft.Json;
+using UnityEditor;
+using UnityEngine;
+using Debug = System.Diagnostics.Debug;
 
 public class EntityJsonUtility
 {
@@ -50,7 +53,7 @@ public class EntityJsonUtility
         return newEntity;
     }
 
-    public static string MakeEntityInfoJson(IEntity entity)
+    public static string MakeEntityInfoJson(IEntity entity, Formatting jsonFormatting)
     {
         List<string> componentsWrapperJsons = new List<string>();
         foreach (var component in entity.GetComponents())
@@ -58,17 +61,32 @@ public class EntityJsonUtility
             componentsWrapperJsons.Add(JsonConvert.SerializeObject(new ClassWrapper(component)));
         }
         var entityInfo = new EntityInfo() {ContextType = entity.contextInfo.name, ComponentsWrapperJsons = componentsWrapperJsons};
-        var jsonStr = JsonConvert.SerializeObject(entityInfo);
-
+        var jsonStr = JsonConvert.SerializeObject(entityInfo, jsonFormatting);
+        
         return jsonStr;
     }
 
     /// <summary>
-    /// 엔티티를 생성하기 위해 필요한 정보들. 
+    /// make nested Json file and save to Resource/EntityTemplete.
     /// </summary>
+    public static void EntityInfoWriteToFile(IEntity entity, string fileName)
+    {
+        string json = MakeEntityInfoJson(entity, Formatting.Indented);
+        string path = $"Assets/Resources/EntityTemplete/{fileName}.json";
+
+        if (!File.Exists(path))
+        {
+            File.Create(path).Close();
+        }
+
+        File.WriteAllText(path, json);
+    }
+    
     public class EntityInfo
     {
         public string ContextType;
         public List<string> ComponentsWrapperJsons = new List<string>();
     }
+
+    
 }

@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Newtonsoft.Json;
+using NUnit.Framework;
 
 
     class Test_EntityJsonUtility
@@ -41,7 +42,7 @@
             entity.AddComponent(0, c1);
             entity.AddComponent(1, c2);
             //action
-            var resultJson = EntityJsonUtility.MakeEntityInfoJson(entity);
+            var resultJson = EntityJsonUtility.MakeEntityInfoJson(entity, Formatting.None);
             //assert
             string expected =
                 @"{""ContextType"":""Game"",""ComponentsWrapperJsons"":[""{\""TypeName\"":\""SomeIntComponent\"",\""Json\"":\""{\\\""Value\\\"":10}\""}"",""{\""TypeName\"":\""SomeIntComponent\"",\""Json\"":\""{\\\""Value\\\"":20}\""}""]}";
@@ -57,7 +58,7 @@
             SomeBoolComponent c1 = new SomeBoolComponent() { Value = true };
             entity.AddComponent(0, c1);
             //action
-            var resultJson = EntityJsonUtility.MakeEntityInfoJson(entity);
+            var resultJson = EntityJsonUtility.MakeEntityInfoJson(entity, Formatting.None);
             //assert
             string expected =
                 @"{""ContextType"":""Input"",""ComponentsWrapperJsons"":[""{\""TypeName\"":\""SomeBoolComponent\"",\""Json\"":\""{\\\""Value\\\"":true}\""}""]}";
@@ -71,7 +72,7 @@
             Contexts contexts = new Contexts();
             var entity = contexts.input.CreateEntity();
             //action
-            var resultJson = EntityJsonUtility.MakeEntityInfoJson(entity);
+            var resultJson = EntityJsonUtility.MakeEntityInfoJson(entity, Formatting.None);
             //assert
             string expected =
                 @"{""ContextType"":""Input"",""ComponentsWrapperJsons"":[]}";
