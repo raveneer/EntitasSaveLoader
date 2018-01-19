@@ -101,7 +101,7 @@ public class EntitySaveLoader
         return MakeNewEntity(_templetDictionary[templeteName], _contexts);
     }
     
-    public static Entity MakeNewEntity(string json, Contexts contexts)
+    public static IEntity MakeNewEntity(string json, Contexts contexts)
     {
         if (string.IsNullOrWhiteSpace(json))
         {
@@ -110,13 +110,22 @@ public class EntitySaveLoader
 
         EntityInfo entityInfo = JsonConvert.DeserializeObject<EntityInfo>(json);
         //Debug.WriteLine($"{entityInfo.ContextType}, {entityInfo.ComponentsWrapperJsons.Count}");
-        Entity newEntity = MakeEntityByContext(contexts, entityInfo);
+
+        IEntity newEntity = MakeEntityByContext(contexts, entityInfo);
 
         //add components
         for (int i = 0; i < entityInfo.ComponentsWrapperJsons.Count; i++)
         {
             IComponent componenet = AnonymousClassJsonParser.MakeNewClassOrNull(entityInfo.ComponentsWrapperJsons[i]) as IComponent;
+
             newEntity.AddComponent(i, componenet);
+
+            Debug.Log("makingComponent...");
+            var index = GameComponentsLookup.SavingData; //4
+            var component = ((GameEntity)newEntity).CreateComponent<SavingDataComponent>(4);
+            Debug.Log("adding...");
+            ((GameEntity) newEntity).ReplaceComponent(4, component);
+            Debug.Log("done.");
         }
 
         return newEntity;

@@ -1,0 +1,9 @@
+{
+  "EntityInfoJsons": [
+    "{\"ContextType\":\"Game\",\"ComponentsWrapperJsons\":[\"{\\\"TypeName\\\":\\\"Fire\\\",\\\"Json\\\":\\\"{\\\\\\\"Strength\\\\\\\":0.0}\\\"}\",\"{\\\"TypeName\\\":\\\"Name\\\",\\\"Json\\\":\\\"{\\\\\\\"Value\\\\\\\":\\\\\\\"555\\\\\\\"}\\\"}\",\"{\\\"TypeName\\\":\\\"SavingDataComponent\\\",\\\"Json\\\":\\\"{}\\\"}\"]}",
+    "{\"ContextType\":\"Game\",\"ComponentsWrapperJsons\":[\"{\\\"TypeName\\\":\\\"Fire\\\",\\\"Json\\\":\\\"{\\\\\\\"Strength\\\\\\\":0.0}\\\"}\",\"{\\\"TypeName\\\":\\\"Name\\\",\\\"Json\\\":\\\"{\\\\\\\"Value\\\\\\\":\\\\\\\"555\\\\\\\"}\\\"}\",\"{\\\"TypeName\\\":\\\"SavingDataComponent\\\",\\\"Json\\\":\\\"{}\\\"}\"]}",
+    "{\"ContextType\":\"Game\",\"ComponentsWrapperJsons\":[\"{\\\"TypeName\\\":\\\"Fire\\\",\\\"Json\\\":\\\"{\\\\\\\"Strength\\\\\\\":0.0}\\\"}\",\"{\\\"TypeName\\\":\\\"Name\\\",\\\"Json\\\":\\\"{\\\\\\\"Value\\\\\\\":\\\\\\\"555\\\\\\\"}\\\"}\",\"{\\\"TypeName\\\":\\\"SavingDataComponent\\\",\\\"Json\\\":\\\"{}\\\"}\"]}",
+    "{\"ContextType\":\"Game\",\"ComponentsWrapperJsons\":[\"{\\\"TypeName\\\":\\\"Fire\\\",\\\"Json\\\":\\\"{\\\\\\\"Strength\\\\\\\":0.0}\\\"}\",\"{\\\"TypeName\\\":\\\"Name\\\",\\\"Json\\\":\\\"{\\\\\\\"Value\\\\\\\":\\\\\\\"555\\\\\\\"}\\\"}\",\"{\\\"TypeName\\\":\\\"SavingDataComponent\\\",\\\"Json\\\":\\\"{}\\\"}\"]}",
+    "{\"ContextType\":\"Game\",\"ComponentsWrapperJsons\":[\"{\\\"TypeName\\\":\\\"Fire\\\",\\\"Json\\\":\\\"{\\\\\\\"Strength\\\\\\\":0.0}\\\"}\",\"{\\\"TypeName\\\":\\\"Name\\\",\\\"Json\\\":\\\"{\\\\\\\"Value\\\\\\\":\\\\\\\"555\\\\\\\"}\\\"}\",\"{\\\"TypeName\\\":\\\"SavingDataComponent\\\",\\\"Json\\\":\\\"{}\\\"}\"]}"
+  ]
+}

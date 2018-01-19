@@ -1,0 +1,7 @@
+{
+  "ContextType": "Game",
+  "ComponentsWrapperJsons": [
+    "{\"TypeName\":\"Fire\",\"Json\":\"{\\\"Strength\\\":1.0}\"}",
+    "{\"TypeName\":\"Health\",\"Json\":\"{\\\"Value\\\":15.0}\"}"
+  ]
+}
