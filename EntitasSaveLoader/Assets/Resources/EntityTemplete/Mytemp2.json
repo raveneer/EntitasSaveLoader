@@ -1,6 +1,7 @@
 {
   "ContextType": "Game",
   "ComponentsWrapperJsons": [
-    "{\"TypeName\":\"Position2D\",\"Json\":\"{\\\"X\\\":10.0,\\\"Y\\\":0.0}\"}"
+    "{\"TypeName\":\"SomeIntComponent\",\"Json\":\"{\\\"Value\\\":22}\"}",
+    "{\"TypeName\":\"SomeStringComponent\",\"Json\":\"{\\\"Value\\\":\\\"99999999\\\"}\"}"
   ]
 }

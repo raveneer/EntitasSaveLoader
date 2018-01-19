@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
 
-
 public class EntityTempleteSaveLoadWindow : EditorWindow
 {
     private string _assetNameForSave = "";
@@ -15,10 +14,10 @@ public class EntityTempleteSaveLoadWindow : EditorWindow
     [MenuItem("Tools/Entity Templete Save Loader")]
     public static void ShowWindow()
     {
-        EditorWindow.GetWindow(typeof(EntityTempleteSaveLoadWindow));
+        GetWindow(typeof(EntityTempleteSaveLoadWindow));
     }
 
-    void OnGUI()
+    private void OnGUI()
     {
         GUILayout.Label("Entity", EditorStyles.boldLabel);
 
@@ -26,60 +25,87 @@ public class EntityTempleteSaveLoadWindow : EditorWindow
         EditorGUILayout.TextField("selectedEntity", _selectedEntity);
 
         //선택한것이 엔티티 게임오브젝트 일 때만.
-        if ((Selection.activeGameObject) && (Selection.activeGameObject.GetComponent<EntityBehaviour>()))
+        if (Selection.activeGameObject && Selection.activeGameObject.GetComponent<EntityBehaviour>())
         {
             _entity = Selection.activeGameObject.GetComponent<EntityBehaviour>().entity;
             _selectedEntity = _entity.ToString();
         }
 
-        //현재 선택된 엔티티를 이름짓고 어셋으로 저장할 수 있다.- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        #region save - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+        GUILayout.Label("Save Entity To asset", EditorStyles.boldLabel);
+
+        //can save to scriptable object asset
         _assetNameForSave = EditorGUILayout.TextField("Name of templete to save:", _assetNameForSave);
 
         if (GUILayout.Button("Save EntityTemplete to asset"))
         {
             if (_entity != null)
             {
-                EntityTemplete asset = ScriptableObject.CreateInstance<EntityTemplete>();
+                var asset = CreateInstance<EntityTemplete>();
                 asset.TempleteName = _assetNameForSave;
                 asset.Json = EntityJsonUtility.MakeEntityInfoJson(_entity, Formatting.None);
                 AssetDatabase.CreateAsset(asset, $"Assets/Resources/EntityTemplete/{_assetNameForSave}.asset");
                 AssetDatabase.SaveAssets();
-
+                AssetDatabase.Refresh();
                 Debug.Log($"{_assetNameForSave} EntityTemplete asset created!");
             }
         }
 
-        //현재 선택된 엔티티를 이름짓고 파일로 저장할 수 있다.- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        //can save to json file
         _assetNameForSave = EditorGUILayout.TextField("Name of templete to save:", _assetNameForSave);
 
-        if (GUILayout.Button("Save EntityTemplete to text"))
+        if (GUILayout.Button("Save EntityTemplete to jsonFile"))
         {
             if (_entity != null)
             {
-                EntityTemplete asset = ScriptableObject.CreateInstance<EntityTemplete>();
+                var asset = CreateInstance<EntityTemplete>();
                 asset.TempleteName = _assetNameForSave;
                 EntityJsonUtility.EntityInfoWriteToFile(_entity, _assetNameForSave);
-
+                AssetDatabase.Refresh();
                 Debug.Log($"{_assetNameForSave} EntityTemplete text file created!");
             }
         }
 
-        GUILayout.Label("Make new Entity from templete", EditorStyles.boldLabel);
+        #endregion
 
-        //스크립터블 오브젝트 어셋을 이용해서 엔티티를 생성할 수 있다.- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        #region load - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+        GUILayout.Label("Make new Entity from asset", EditorStyles.boldLabel);
+
+        //can make entity from SO asset
         _assetNameForLoad = EditorGUILayout.TextField("Templete Name :", _assetNameForLoad);
 
-        if (GUILayout.Button("Make new Entity!"))
+        if (GUILayout.Button("Make new Entity from asset!"))
         {
-            EntityTemplete asset = AssetDatabase.LoadAssetAtPath<EntityTemplete>($"Assets/Resources/EntityTemplete/{_assetNameForLoad}.asset");
+            var asset = AssetDatabase.LoadAssetAtPath<EntityTemplete>($"Assets/Resources/EntityTemplete/{_assetNameForLoad}.asset");
+            //Debug.Log(asset.Json);
             EntityJsonUtility.MakeNewEntity(asset.Json, Contexts.sharedInstance);
-
             Debug.Log($"{_assetNameForLoad} entity created!");
         }
 
+        //can make entity from json file
+        _assetNameForLoad = EditorGUILayout.TextField("Templete Name :", _assetNameForLoad);
+
+        if (GUILayout.Button("Make new Entity from txt(json)!"))
+        {
+            var asset = Resources.Load<TextAsset>($"EntityTemplete/{_assetNameForLoad}");
+            if (asset == null)
+            {
+                Debug.Log($"error : no {_assetNameForLoad}.txt file");
+            }
+            else
+            {
+                //Debug.Log(asset.text);
+                EntityJsonUtility.MakeNewEntity(asset.text, Contexts.sharedInstance);
+                Debug.Log($"{_assetNameForLoad} entity created!");
+            }
+        }
+
+        #endregion
 
         GUILayout.Label("Reset", EditorStyles.boldLabel);
-        //초기화
+
         if (GUILayout.Button("Clear"))
         {
             _assetNameForSave = "";

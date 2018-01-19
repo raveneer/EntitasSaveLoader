@@ -1,7 +1,0 @@
-{
-  "ContextType": "Game",
-  "ComponentsWrapperJsons": [
-    "{\"TypeName\":\"Fire\",\"Json\":\"{\\\"Strength\\\":666.0}\"}",
-    "{\"TypeName\":\"Name\",\"Json\":\"{\\\"Value\\\":\\\"abs\\\"}\"}"
-  ]
-}
