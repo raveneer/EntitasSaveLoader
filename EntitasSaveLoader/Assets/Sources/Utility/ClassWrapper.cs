@@ -1,17 +1,22 @@
 ﻿using Newtonsoft.Json;
 
 
-public class ClassWrapper
+namespace EntityTempleteSaveLoader
 {
-    public string TypeName;
-    public string Json;
-
-    public ClassWrapper() { }
-
-    public ClassWrapper(object obj)
+    public class ClassWrapper
     {
-        TypeName = obj.GetType().ToString();
-        Json = JsonConvert.SerializeObject(obj);
-    }
+        public string TypeName;
+        public string Json;
 
+        public ClassWrapper()
+        {
+        }
+
+        public ClassWrapper(object obj)
+        {
+            TypeName = obj.GetType().ToString();
+            Json = JsonConvert.SerializeObject(obj);
+        }
+
+    }
 }

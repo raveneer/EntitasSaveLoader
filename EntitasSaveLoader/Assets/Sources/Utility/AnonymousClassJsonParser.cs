@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using EntityTempleteSaveLoader;
 using Newtonsoft.Json;
 
 /// <summary>
@@ -7,21 +8,17 @@ using Newtonsoft.Json;
 ///     리플렉션을 이용하여 클래스를 만든다. 따라서 클래스 타입이 어셈블리에 있다면 생성되고 없으면 실패한다.
 ///     주의 : IOS에서 작동여부가 불확실하다. 테스트 필요.
 /// </summary>
-public partial class AnonymousClassJsonParser
+public class AnonymousClassJsonParser
 {
     public static object MakeNewClassOrNull(string nestedJson)
     {
         if (string.IsNullOrWhiteSpace(nestedJson))
-        {
             return null;
-        }
 
         var wrapper = JsonConvert.DeserializeObject<ClassWrapper>(nestedJson);
 
         if (string.IsNullOrWhiteSpace(wrapper.TypeName))
-        {
             return null;
-        }
 
         try
         {

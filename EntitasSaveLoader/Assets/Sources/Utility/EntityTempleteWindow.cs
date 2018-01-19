@@ -1,8 +1,8 @@
 ﻿using Entitas;
 using Entitas.VisualDebugging.Unity;
-using UnitTestProject;
 using UnityEditor;
 using UnityEngine;
+
 
 public class EntityTempleteSaveLoadWindow : EditorWindow
 {
@@ -20,7 +20,7 @@ public class EntityTempleteSaveLoadWindow : EditorWindow
     void OnGUI()
     {
         GUILayout.Label("Entity", EditorStyles.boldLabel);
-        
+
         //선택한 엔티티출력- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         EditorGUILayout.TextField("selectedEntity", _selectedEntity);
 
@@ -30,7 +30,7 @@ public class EntityTempleteSaveLoadWindow : EditorWindow
             _entity = Selection.activeGameObject.GetComponent<EntityBehaviour>().entity;
             _selectedEntity = _entity.ToString();
         }
-        
+
         //현재 선택된 엔티티를 이름짓고 어셋으로 저장할 수 있다.- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         _assetNameForSave = EditorGUILayout.TextField("Name of templete to save:", _assetNameForSave);
 
