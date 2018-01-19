@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using Entitas;
@@ -100,7 +101,9 @@ public class EntitySaveLoader
 
         return MakeNewEntity(_templetDictionary[templeteName], _contexts);
     }
-    
+
+    //todo : 컴포넌트의 번호 (GameComponentsLookup)를 받아내야 함. 제작중에 번호가 바뀔 수 있으므로, 번호를 Json에 저장할 수는 없을 것이다.
+    //todo : flag인지 아닌지를 체크해서 flag면 replace, 아니면 addcomponent를 해야한다.
     public static IEntity MakeNewEntity(string json, Contexts contexts)
     {
         if (string.IsNullOrWhiteSpace(json))
@@ -120,11 +123,13 @@ public class EntitySaveLoader
 
             newEntity.AddComponent(i, componenet);
 
+            int componentLookUpIndex =  (int)typeof(GameComponentsLookup).GetField("SavingData").GetValue(null);
+            Debug.Log($"componentLookUpIndex {componentLookUpIndex}");
+
             Debug.Log("makingComponent...");
-            var index = GameComponentsLookup.SavingData; //4
-            var component = ((GameEntity)newEntity).CreateComponent<SavingDataComponent>(4);
+            var component = ((GameEntity)newEntity).CreateComponent<SavingDataComponent>(componentLookUpIndex);
             Debug.Log("adding...");
-            ((GameEntity) newEntity).ReplaceComponent(4, component);
+            ((GameEntity) newEntity).ReplaceComponent(4, component); //this is flag. so, don't use 'addcomponent'
             Debug.Log("done.");
         }
 
