@@ -10,6 +10,47 @@ using Debug = System.Diagnostics.Debug;
 
 public class EntityJsonUtility
 {
+    private static  Dictionary<string, string> _templetDictionary = new Dictionary<string, string>();
+    private static bool _dictionaryReady;
+    
+
+    public static void ReloadTempletesFromResource()
+    {
+        var templetAssets = Resources.LoadAll<TextAsset>("EntityTemplete");
+        foreach (var textAsset in templetAssets)
+        {
+            //UnityEngine.Debug.Log($"textAsset.name {textAsset.name}, textAsset.text ={textAsset.text}");
+            var key = textAsset.name;
+            var value = textAsset.text;
+            if (_templetDictionary.ContainsKey(key))
+            {
+                _templetDictionary[key] = value;
+            }
+            else
+            {
+                _templetDictionary.Add(key, value);
+            }
+        }
+        _dictionaryReady = true;
+    }
+
+    public static IEntity MakeEntityFromTemplete(string templeteName, Contexts _contexts)
+    {
+        //razy init
+        if (!_dictionaryReady)
+        {
+            ReloadTempletesFromResource();
+        }
+
+        if (!_templetDictionary.ContainsKey(templeteName))
+        {
+            UnityEngine.Debug.Log($"error : can't find templeteName {templeteName}.");
+            return null;
+        }
+
+        return MakeNewEntity(_templetDictionary[templeteName], _contexts);
+    }
+    
     public static Entity MakeNewEntity(string json, Contexts contexts)
     {
         if (string.IsNullOrWhiteSpace(json))
@@ -32,26 +73,6 @@ public class EntityJsonUtility
         return newEntity;
     }
 
-    private static Entity MakeEntityByContext(Contexts contexts, EntityInfo entityInfo)
-    {
-        Entity newEntity = null;
-        switch (entityInfo.ContextType)
-        {
-            case "Game":
-                newEntity = contexts.game.CreateEntity();
-                break;
-                /*case "Input":
-                    newEntity = contexts.input.CreateEntity();
-                    break;
-                case "Ui":
-                    newEntity = contexts.ui.CreateEntity();*/
-                break;
-            default:
-                throw new Exception("not support type");
-        }
-
-        return newEntity;
-    }
 
     public static string MakeEntityInfoJson(IEntity entity, Formatting jsonFormatting)
     {
@@ -81,12 +102,32 @@ public class EntityJsonUtility
 
         File.WriteAllText(path, json);
     }
-    
+
+    private static Entity MakeEntityByContext(Contexts contexts, EntityInfo entityInfo)
+    {
+        Entity newEntity = null;
+        switch (entityInfo.ContextType)
+        {
+            case "Game":
+                newEntity = contexts.game.CreateEntity();
+                break;
+                /*case "Input":
+                    newEntity = contexts.input.CreateEntity();
+                    break;
+                case "Ui":
+                    newEntity = contexts.ui.CreateEntity();*/
+                break;
+            default:
+                throw new Exception("not support type");
+        }
+
+        return newEntity;
+    }
+
     public class EntityInfo
     {
         public string ContextType;
         public List<string> ComponentsWrapperJsons = new List<string>();
     }
 
-    
 }

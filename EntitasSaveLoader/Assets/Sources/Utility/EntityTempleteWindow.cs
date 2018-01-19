@@ -35,8 +35,55 @@ public class EntityTempleteSaveLoadWindow : EditorWindow
 
         GUILayout.Label("Save Entity To asset", EditorStyles.boldLabel);
 
-        //can save to scriptable object asset
+        //can save to json file
         _assetNameForSave = EditorGUILayout.TextField("Name of templete to save:", _assetNameForSave);
+
+        if (GUILayout.Button("Save entity!"))
+        {
+            if (_entity != null)
+            {
+                var asset = CreateInstance<EntityTemplete>();
+                asset.TempleteName = _assetNameForSave;
+                EntityJsonUtility.EntityInfoWriteToFile(_entity, _assetNameForSave);
+                AssetDatabase.Refresh();
+                EntityJsonUtility.ReloadTempletesFromResource();
+                Debug.Log($"{_assetNameForSave} EntityTemplete text file created!");
+            }
+        }
+
+        #endregion
+
+        #region load - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+        GUILayout.Label("Make new Entity from text asset", EditorStyles.boldLabel);
+
+        _assetNameForLoad = EditorGUILayout.TextField("Name of templete to save:", _assetNameForLoad);
+
+        if (GUILayout.Button("Make new entity!"))
+        {
+            EntityJsonUtility.MakeEntityFromTemplete(_assetNameForLoad, Contexts.sharedInstance);
+        }
+
+        #endregion
+
+        GUILayout.Label("Reset", EditorStyles.boldLabel);
+
+        if (GUILayout.Button("Clear"))
+        {
+            _assetNameForSave = "";
+            _assetNameForLoad = "";
+            _selectedEntity = "";
+        }
+    }
+}
+
+
+
+/*scriptableObject support  needed?
+ 
+    
+        //can save to scriptable object asset
+        
 
         if (GUILayout.Button("Save EntityTemplete to asset"))
         {
@@ -52,27 +99,7 @@ public class EntityTempleteSaveLoadWindow : EditorWindow
             }
         }
 
-        //can save to json file
-        _assetNameForSave = EditorGUILayout.TextField("Name of templete to save:", _assetNameForSave);
-
-        if (GUILayout.Button("Save EntityTemplete to jsonFile"))
-        {
-            if (_entity != null)
-            {
-                var asset = CreateInstance<EntityTemplete>();
-                asset.TempleteName = _assetNameForSave;
-                EntityJsonUtility.EntityInfoWriteToFile(_entity, _assetNameForSave);
-                AssetDatabase.Refresh();
-                Debug.Log($"{_assetNameForSave} EntityTemplete text file created!");
-            }
-        }
-
-        #endregion
-
-        #region load - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-        GUILayout.Label("Make new Entity from asset", EditorStyles.boldLabel);
-
+  
         //can make entity from SO asset
         _assetNameForLoad = EditorGUILayout.TextField("Templete Name :", _assetNameForLoad);
 
@@ -86,31 +113,4 @@ public class EntityTempleteSaveLoadWindow : EditorWindow
 
         //can make entity from json file
         _assetNameForLoad = EditorGUILayout.TextField("Templete Name :", _assetNameForLoad);
-
-        if (GUILayout.Button("Make new Entity from txt(json)!"))
-        {
-            var asset = Resources.Load<TextAsset>($"EntityTemplete/{_assetNameForLoad}");
-            if (asset == null)
-            {
-                Debug.Log($"error : no {_assetNameForLoad}.txt file");
-            }
-            else
-            {
-                //Debug.Log(asset.text);
-                EntityJsonUtility.MakeNewEntity(asset.text, Contexts.sharedInstance);
-                Debug.Log($"{_assetNameForLoad} entity created!");
-            }
-        }
-
-        #endregion
-
-        GUILayout.Label("Reset", EditorStyles.boldLabel);
-
-        if (GUILayout.Button("Clear"))
-        {
-            _assetNameForSave = "";
-            _assetNameForLoad = "";
-            _selectedEntity = "";
-        }
-    }
-}
+*/
