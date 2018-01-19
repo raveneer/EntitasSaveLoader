@@ -1,9 +1,11 @@
 # EntitasSaveLoader v0.2
 can save/load entity and components info in runtime
 
-https://www.youtube.com/watch?v=w8IwLh8ct50&feature=youtu.be
-
+https://www.youtube.com/watch?v=XLcMHU0O6CM&feature=youtu.be
 https://github.com/sschmid/Entitas-CSharp
+
+## version
+v0.2 : can save/load by Json file.
 
 ## install
 1. go to asset store, install Json.Net.
