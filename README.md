@@ -36,4 +36,4 @@ v0.2 : can save/load by Json file.
 ## next?
 saving all entity templete to disk with file?
 link to google spreadsheet?
-saving Game?
+only save by 'save' component?
