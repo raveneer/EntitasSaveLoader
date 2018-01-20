@@ -18,7 +18,7 @@ internal class Test_EntityJsonUtility
     [Test]
     public void NewEntityWithComponentOrNull_Return_NewEntityWithComponentAdded()
     {
-        var contexts = Contexts.sharedInstance;
+        var contexts = new Contexts();
         //arrange
         var json =
             @"{""ContextType"":""Game"",""ComponentsWrapperJsons"":[""{\""TypeName\"":\""SomeIntComponent\"",\""Json\"":\""{\\\""Value\\\"":10}\""}"",""{\""TypeName\"":\""SomeIntComponent\"",\""Json\"":\""{\\\""Value\\\"":20}\""}""]}";

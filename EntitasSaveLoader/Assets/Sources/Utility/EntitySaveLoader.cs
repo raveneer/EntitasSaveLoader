@@ -6,6 +6,7 @@ using Entitas;
 using EntityTempleteSaveLoader;
 using Newtonsoft.Json;
 using UnityEngine;
+using System.Reflection;
 
 public class EntitySaveLoader
 {
@@ -102,7 +103,6 @@ public class EntitySaveLoader
         return MakeNewEntity(_templetDictionary[templeteName], _contexts);
     }
 
-    //todo : 컴포넌트의 번호 (GameComponentsLookup)를 받아내야 함. 제작중에 번호가 바뀔 수 있으므로, 번호를 Json에 저장할 수는 없을 것이다.
     //todo : flag인지 아닌지를 체크해서 flag면 replace, 아니면 addcomponent를 해야한다.
     public static IEntity MakeNewEntity(string json, Contexts contexts)
     {
@@ -112,25 +112,18 @@ public class EntitySaveLoader
         }
 
         EntityInfo entityInfo = JsonConvert.DeserializeObject<EntityInfo>(json);
-        //Debug.WriteLine($"{entityInfo.ContextType}, {entityInfo.ComponentsWrapperJsons.Count}");
-
         IEntity newEntity = MakeEntityByContext(contexts, entityInfo);
-
+        
         //add components
         for (int i = 0; i < entityInfo.ComponentsWrapperJsons.Count; i++)
         {
-            IComponent componenet = AnonymousClassJsonParser.MakeNewClassOrNull(entityInfo.ComponentsWrapperJsons[i]) as IComponent;
-
-            newEntity.AddComponent(i, componenet);
-
-            int componentLookUpIndex =  (int)typeof(GameComponentsLookup).GetField("SavingData").GetValue(null);
-            Debug.Log($"componentLookUpIndex {componentLookUpIndex}");
-
-            Debug.Log("makingComponent...");
-            var component = ((GameEntity)newEntity).CreateComponent<SavingDataComponent>(componentLookUpIndex);
-            Debug.Log("adding...");
-            ((GameEntity) newEntity).ReplaceComponent(4, component); //this is flag. so, don't use 'addcomponent'
-            Debug.Log("done.");
+            var component = AnonymousClassJsonParser.MakeNewClassOrNull(entityInfo.ComponentsWrapperJsons[i]);
+            //todo : this line works well but test fail...why?
+            int componentLookUpIndex = (int)typeof(GameComponentsLookup).GetField(component.GetType().ToString()).GetValue(null); 
+            ((Entity)newEntity).AddComponent(componentLookUpIndex, component as IComponent);
+            
+            //check for adding groups
+            var fireEntities = contexts.game.GetGroup(GameMatcher.Fire).GetEntities();
         }
 
         return newEntity;
@@ -197,5 +190,5 @@ public class EntitySaveLoader
     {
         public List<string> EntityInfoJsons = new List<string>();
     }
-
+    
 }
