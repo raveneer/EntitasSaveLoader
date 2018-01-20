@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 
 
-internal class Test_EntityJsonUtility
+internal class Test_SaveLoader
 {
     [Test]
     public void Entitas_AddComponent_NeedContext()
@@ -115,8 +115,6 @@ internal class Test_EntityJsonUtility
         stringComponent.Value = "name";
 
         Assert.AreEqual(false, EntitySaveLoader.IsFlagComponent(stringComponent));
-
-
     }
     
 }

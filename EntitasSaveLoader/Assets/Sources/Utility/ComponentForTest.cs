@@ -1,4 +1,5 @@
 ﻿using Entitas;
+using UnityEngine;
 
 [Game]
 public class SomeFloatComponent : IComponent
@@ -28,6 +29,12 @@ public class SomeBoolComponent : IComponent
 public class SomeEnumComponent : IComponent
 {
     public SomeEnum Value;
+}
+
+[Game]
+public class SomeRefTypeComponent : IComponent
+{
+    public GameObject GameObjectRef;
 }
 
 public enum SomeEnum

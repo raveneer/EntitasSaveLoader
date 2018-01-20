@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿using System;
+using System.Diagnostics;
+using NUnit.Framework;
 
 public class Test_AnonymousClassJsonParser
 {
@@ -42,15 +44,53 @@ public class Test_AnonymousClassJsonParser
     [Test]
     public void SerialAndDeserial_SupportValueTypes()
     {
-        var typeCheck = new SomeTypeChecker(1.1f, 2, "three", true, SomeEnum.Second);
+        var typeCheck = new SomeClassHaveValueTypeFiled(1.1f, 2, "three", true, SomeEnum.Second);
         var jsonString = AnonymousClassJsonParser.MakeNestedJson(typeCheck);
         var newObject = AnonymousClassJsonParser.MakeNewClassOrNull(jsonString);
         Assert.AreEqual(typeCheck.GetType(), newObject.GetType());
-        Assert.AreEqual(1.1f, ((SomeTypeChecker)newObject).FValue);
-        Assert.AreEqual(2 , ((SomeTypeChecker)newObject).IValue);
-        Assert.AreEqual("three", ((SomeTypeChecker)newObject).SValue);
-        Assert.AreEqual(true , ((SomeTypeChecker)newObject).BValue);
-        Assert.AreEqual(SomeEnum.Second, ((SomeTypeChecker)newObject).EValue);
+        Assert.AreEqual(1.1f, ((SomeClassHaveValueTypeFiled)newObject).FValue);
+        Assert.AreEqual(2 , ((SomeClassHaveValueTypeFiled)newObject).IValue);
+        Assert.AreEqual("three", ((SomeClassHaveValueTypeFiled)newObject).SValue);
+        Assert.AreEqual(true , ((SomeClassHaveValueTypeFiled)newObject).BValue);
+        Assert.AreEqual(SomeEnum.Second, ((SomeClassHaveValueTypeFiled)newObject).EValue);
+    }
+
+    [Test]
+    public void SerialAndDeserial_NotSupportRefTypes()
+    {
+        var typeCheck = new SomeClassHaveRefTypeFiled{SomeCatRef = new SomeCat(){ScratchPower = 10}};
+        var jsonString = AnonymousClassJsonParser.MakeNestedJson(typeCheck);
+        Debug.WriteLine(jsonString);
+        var newObject = AnonymousClassJsonParser.MakeNewClassOrNull(jsonString);
+        Assert.AreEqual(typeCheck.GetType(), newObject.GetType());
+        Assert.AreEqual(10, ((SomeClassHaveRefTypeFiled)newObject).SomeCatRef.ScratchPower);
+        //todo : 지원하면 안되는데 지원하네...? 짱 좋은데...?
+        Assert.Fail();
+    }
+
+    [Test]
+    public void Test_IsValueTypeComponent()
+    {
+        var refTypeClass = new SomeClassHaveRefTypeFiled();
+        Assert.AreEqual(true, IsValueTypeComponent(valueTypeClass));
+
+        var valueTypeClass = new SomeClassHaveValueTypeFiled(1,1,"a", true, SomeEnum.First);
+        Assert.AreEqual(true, IsValueTypeComponent(valueTypeClass));
+
+        
+    }
+
+    public bool IsValueTypeComponent(Object obj)
+    {
+        var filedsTypes = obj.GetType().GetFields();
+        foreach (var filedsType in filedsTypes)
+        {
+            if (! filedsType.GetType().IsValueType)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     [Timeout(1000)]
@@ -97,7 +137,7 @@ public class SomeDog
     public float BitePower = 10;
 }
 
-public class SomeTypeChecker
+public class SomeClassHaveValueTypeFiled
 {
     public float FValue;
     public int IValue;
@@ -105,7 +145,7 @@ public class SomeTypeChecker
     public bool BValue;
     public SomeEnum EValue;
 
-    public SomeTypeChecker(float fValue, int iValue, string sValue, bool bValue, SomeEnum eValue)
+    public SomeClassHaveValueTypeFiled(float fValue, int iValue, string sValue, bool bValue, SomeEnum eValue)
     {
         FValue = fValue;
         IValue = iValue;
@@ -113,4 +153,9 @@ public class SomeTypeChecker
         BValue = bValue;
         EValue = eValue;
     }
+}
+
+public class SomeClassHaveRefTypeFiled
+{
+    public SomeCat SomeCatRef;
 }
