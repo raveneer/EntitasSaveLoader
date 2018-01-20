@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using UnityEngine;
 
 
 internal class Test_EntityJsonUtility
@@ -45,7 +45,6 @@ internal class Test_EntityJsonUtility
         string b = "saveDataComponent";
         Assert.AreEqual("saveData", EntitySaveLoader.RemoveComponentSubfix(b));
 
-
     }
 
     
@@ -61,10 +60,17 @@ internal class Test_EntityJsonUtility
         entity.AddComponent(0, c1);
         entity.AddComponent(1, c2);
         //action
-        var resultJson = EntitySaveLoader.MakeEntityInfoJson(entity, Formatting.None);
+        var resultJson = EntitySaveLoader.MakeEntityInfoJson(entity, Formatting.Indented);
+        Debug.WriteLine(resultJson);
         //assert
         var expected =
-            @"{""ContextType"":""Game"",""ComponentsWrapperJsons"":[""{\""TypeName\"":\""SomeIntComponent\"",\""Json\"":\""{\\\""Value\\\"":10}\""}"",""{\""TypeName\"":\""SomeIntComponent\"",\""Json\"":\""{\\\""Value\\\"":20}\""}""]}";
+            @"{
+  ""ContextType"": ""Game"",
+  ""ComponentsWrapperJsons"": [
+    ""{\""TypeName\"":\""SomeIntComponent\"",\""Json\"":\""{\\\""Value\\\"":10}\""}"",
+    ""{\""TypeName\"":\""SomeIntComponent\"",\""Json\"":\""{\\\""Value\\\"":20}\""}""
+  ]
+}";
         Assert.AreEqual(expected, resultJson);
     }
 

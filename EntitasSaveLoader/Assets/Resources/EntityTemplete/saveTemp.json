@@ -1,8 +1,0 @@
-{
-  "ContextType": "Game",
-  "ComponentsWrapperJsons": [
-    "{\"TypeName\":\"Health\",\"Json\":\"{\\\"Value\\\":1.0}\"}",
-    "{\"TypeName\":\"Name\",\"Json\":\"{\\\"Value\\\":\\\"11\\\"}\"}",
-    "{\"TypeName\":\"SavingDataComponent\",\"Json\":\"{}\"}"
-  ]
-}
