@@ -11,15 +11,14 @@ public class EntitySaveLoader
 {
     private static readonly Dictionary<string, string> _templetDictionary = new Dictionary<string, string>();
     private static bool _dictionaryReady;
-
-
+    
     public static void SaveEntitiesInScene(Contexts contexts, string saveFileName)
     {
         var savingEntities = contexts.game.GetGroup(GameMatcher.SavingData).GetEntities();
         var saveData = new EntitiesSaveData();
         foreach (var savingEntity in savingEntities)
         {
-            saveData.EntityInfoJsons.Add(MakeEntityInfoJson(savingEntity, Formatting.None));
+            saveData.EntityInfos.Add(MakeEntityInfo(savingEntity));
         }
 
         var json = JsonConvert.SerializeObject(saveData, Formatting.Indented);
@@ -45,9 +44,9 @@ public class EntitySaveLoader
         }
 
         var saveData = JsonConvert.DeserializeObject<EntitiesSaveData>(saveFileAsset.text);
-        foreach (var infoJson in saveData.EntityInfoJsons)
+        foreach (var entityInfo in saveData.EntityInfos)
         {
-            MakeNewEntity(infoJson, contexts);
+            MakeEntity(entityInfo, contexts);
         }
 
         Debug.Log("LoadEntitiesFromSaveFile done!");
@@ -87,34 +86,41 @@ public class EntitySaveLoader
             return null;
         }
 
-        return MakeNewEntity(_templetDictionary[templeteName], _contexts);
+        return MakeEntity(_templetDictionary[templeteName], _contexts);
+    }
+    
+    public static IEntity MakeEntity(string json, Contexts contexts)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            Debug.Log("empty json!");
+        }
+
+        var entityInfo = JsonConvert.DeserializeObject<EntityInfo>(json);
+        return MakeEntity(entityInfo, contexts);
     }
 
     //todo : support input, ui etc... components
-    public static IEntity MakeNewEntity(string json, Contexts contexts)
+    private static IEntity MakeEntity(EntityInfo entityInfo, Contexts contexts)
     {
-        if (string.IsNullOrWhiteSpace(json))
-            Debug.Log("empty json!");
-
-        var entityInfo = JsonConvert.DeserializeObject<EntityInfo>(json);
-        IEntity newEntity = MakeEntityByContext(contexts, entityInfo);
+        IEntity newEntity = MakeEntityByContext(entityInfo, contexts);
 
         //add components
         for (var i = 0; i < entityInfo.ComponentsWrapperJsons.Count; i++)
         {
             var component = AnonymousClassJsonParser.MakeNewClassOrNull(entityInfo.ComponentsWrapperJsons[i]);
             var componentLookUpName = RemoveComponentSubfix(component.GetType().ToString());
-            var componentLookUpIndex = (int) typeof(GameComponentsLookup).GetField(componentLookUpName).GetValue(null);
+            var componentLookUpIndex = (int)typeof(GameComponentsLookup).GetField(componentLookUpName).GetValue(null);
 
             if (IsFlagComponent(component as IComponent))
             {
-                ((Entity) newEntity).AddComponent(componentLookUpIndex, component as IComponent);
+                ((Entity)newEntity).AddComponent(componentLookUpIndex, component as IComponent);
             }
             else
             {
                 ((Entity)newEntity).AddComponent(componentLookUpIndex, component as IComponent);
             }
-                
+
         }
 
         return newEntity;
@@ -141,6 +147,15 @@ public class EntitySaveLoader
     /// </summary>
     public static string MakeEntityInfoJson(IEntity entity, Formatting jsonFormatting)
     {
+        EntityInfo entityInfo = MakeEntityInfo(entity);
+        var jsonStr = JsonConvert.SerializeObject(entityInfo, jsonFormatting);
+
+        return jsonStr;
+    }
+
+
+    public static EntityInfo MakeEntityInfo(IEntity entity)
+    {
         var componentsWrapperJsons = new List<string>();
 
         foreach (var component in entity.GetComponents())
@@ -151,10 +166,8 @@ public class EntitySaveLoader
             }
         }
 
-        var entityInfo = new EntityInfo {ContextType = entity.contextInfo.name, ComponentsWrapperJsons = componentsWrapperJsons};
-        var jsonStr = JsonConvert.SerializeObject(entityInfo, jsonFormatting);
-
-        return jsonStr;
+        var entityInfo = new EntityInfo { ContextType = entity.contextInfo.name, ComponentsWrapperJsons = componentsWrapperJsons };
+        return entityInfo;
     }
 
     /// <summary>
@@ -173,9 +186,12 @@ public class EntitySaveLoader
         File.WriteAllText(path, json);
     }
 
-    private static Entity MakeEntityByContext(Contexts contexts, EntityInfo entityInfo)
+    /// <summary>
+    /// only make new Entity. not add components
+    /// </summary>
+    private static IEntity MakeEntityByContext(EntityInfo entityInfo, Contexts contexts)
     {
-        Entity newEntity = null;
+        IEntity newEntity = null;
         switch (entityInfo.ContextType)
         {
             case "Game":
@@ -202,7 +218,7 @@ public class EntitySaveLoader
 
     public class EntitiesSaveData
     {
-        public List<string> EntityInfoJsons = new List<string>();
+        public List<EntityInfo> EntityInfos = new List<EntityInfo>();
     }
     
     /// <summary>

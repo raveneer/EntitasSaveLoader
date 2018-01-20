@@ -28,7 +28,7 @@ internal class Test_SaveLoader
 
         //Assert.NotNull(json);
 
-        var newEntity = EntitySaveLoader.MakeNewEntity(json, contexts);
+        var newEntity = EntitySaveLoader.MakeEntity(json, contexts);
         //assert
         Assert.AreEqual(2, newEntity.GetComponents().Length);
         Assert.AreEqual("Game", newEntity.contextInfo.name);
