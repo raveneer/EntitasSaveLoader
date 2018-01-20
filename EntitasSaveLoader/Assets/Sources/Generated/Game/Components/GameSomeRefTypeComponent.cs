@@ -11,17 +11,17 @@ public partial class GameEntity {
     public SomeRefTypeComponent someRefType { get { return (SomeRefTypeComponent)GetComponent(GameComponentsLookup.SomeRefType); } }
     public bool hasSomeRefType { get { return HasComponent(GameComponentsLookup.SomeRefType); } }
 
-    public void AddSomeRefType(UnityEngine.GameObject newGameObjectRef) {
+    public void AddSomeRefType(object newObjectRef) {
         var index = GameComponentsLookup.SomeRefType;
         var component = CreateComponent<SomeRefTypeComponent>(index);
-        component.GameObjectRef = newGameObjectRef;
+        component.ObjectRef = newObjectRef;
         AddComponent(index, component);
     }
 
-    public void ReplaceSomeRefType(UnityEngine.GameObject newGameObjectRef) {
+    public void ReplaceSomeRefType(object newObjectRef) {
         var index = GameComponentsLookup.SomeRefType;
         var component = CreateComponent<SomeRefTypeComponent>(index);
-        component.GameObjectRef = newGameObjectRef;
+        component.ObjectRef = newObjectRef;
         ReplaceComponent(index, component);
     }
 

@@ -5,6 +5,7 @@ using Entitas;
 using EntityTempleteSaveLoader;
 using Newtonsoft.Json;
 using UnityEngine;
+using System.Reflection;
 
 public class EntitySaveLoader
 {
@@ -134,13 +135,20 @@ public class EntitySaveLoader
         return component.GetType().GetFields().Length == 0;
     }
 
+    /// <summary>
+    /// only value or string field have components serialized.
+    /// ref type componets ignored.
+    /// </summary>
     public static string MakeEntityInfoJson(IEntity entity, Formatting jsonFormatting)
     {
         var componentsWrapperJsons = new List<string>();
 
         foreach (var component in entity.GetComponents())
         {
-            componentsWrapperJsons.Add(JsonConvert.SerializeObject(new ClassWrapper(component)));
+            if (IsValueTypeComponent(component))
+            {
+                componentsWrapperJsons.Add(JsonConvert.SerializeObject(new ClassWrapper(component)));
+            }
         }
 
         var entityInfo = new EntityInfo {ContextType = entity.contextInfo.name, ComponentsWrapperJsons = componentsWrapperJsons};
@@ -195,5 +203,21 @@ public class EntitySaveLoader
     public class EntitiesSaveData
     {
         public List<string> EntityInfoJsons = new List<string>();
+    }
+    
+    /// <summary>
+    /// check value type or stringType
+    /// </summary>
+    public static bool IsValueTypeComponent(System.Object obj)
+    {
+        var filedsTypes = obj.GetType().GetFields();
+        foreach (var fieldInfo in filedsTypes)
+        {
+            if (!fieldInfo.FieldType.IsValueType && fieldInfo.FieldType.ToString() != "System.String")
+            {
+                return false;
+            }
+        }
+        return true;
     }
 }

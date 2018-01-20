@@ -55,43 +55,6 @@ public class Test_AnonymousClassJsonParser
         Assert.AreEqual(SomeEnum.Second, ((SomeClassHaveValueTypeFiled)newObject).EValue);
     }
 
-    [Test]
-    public void SerialAndDeserial_NotSupportRefTypes()
-    {
-        var typeCheck = new SomeClassHaveRefTypeFiled{SomeCatRef = new SomeCat(){ScratchPower = 10}};
-        var jsonString = AnonymousClassJsonParser.MakeNestedJson(typeCheck);
-        Debug.WriteLine(jsonString);
-        var newObject = AnonymousClassJsonParser.MakeNewClassOrNull(jsonString);
-        Assert.AreEqual(typeCheck.GetType(), newObject.GetType());
-        Assert.AreEqual(10, ((SomeClassHaveRefTypeFiled)newObject).SomeCatRef.ScratchPower);
-        //todo : 지원하면 안되는데 지원하네...? 짱 좋은데...?
-        Assert.Fail();
-    }
-
-    [Test]
-    public void Test_IsValueTypeComponent()
-    {
-        var refTypeClass = new SomeClassHaveRefTypeFiled();
-        Assert.AreEqual(true, IsValueTypeComponent(valueTypeClass));
-
-        var valueTypeClass = new SomeClassHaveValueTypeFiled(1,1,"a", true, SomeEnum.First);
-        Assert.AreEqual(true, IsValueTypeComponent(valueTypeClass));
-
-        
-    }
-
-    public bool IsValueTypeComponent(Object obj)
-    {
-        var filedsTypes = obj.GetType().GetFields();
-        foreach (var filedsType in filedsTypes)
-        {
-            if (! filedsType.GetType().IsValueType)
-            {
-                return false;
-            }
-        }
-        return true;
-    }
 
     [Timeout(1000)]
     [Test]

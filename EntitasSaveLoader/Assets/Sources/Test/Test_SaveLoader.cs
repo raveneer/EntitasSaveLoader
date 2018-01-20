@@ -46,11 +46,9 @@ internal class Test_SaveLoader
         Assert.AreEqual("saveData", EntitySaveLoader.RemoveComponentSubfix(b));
 
     }
-
     
-
     [Test]
-    public void ToJson_return_Json_1()
+    public void ToJson_return_Json_Indented()
     {
         //arrange
         var contexts = new Contexts();
@@ -75,7 +73,7 @@ internal class Test_SaveLoader
     }
 
     [Test]
-    public void ToJson_return_Json_2()
+    public void ToJson_return_Json_NoneFormat()
     {
         //arrange
         var contexts = new Contexts();
@@ -91,7 +89,7 @@ internal class Test_SaveLoader
     }
 
     [Test]
-    public void ToJson_return_Json_WhenNoComponent()
+    public void MakeEntityInfoJson_return_Json_WhenNoComponent()
     {
         //arrange
         var contexts = new Contexts();
@@ -116,5 +114,17 @@ internal class Test_SaveLoader
 
         Assert.AreEqual(false, EntitySaveLoader.IsFlagComponent(stringComponent));
     }
-    
+
+
+
+    [Test]
+    public void Test_IsValueTypeComponent()
+    {
+        var refTypeClass = new SomeClassHaveRefTypeFiled();
+        Assert.AreEqual(false, EntitySaveLoader.IsValueTypeComponent(refTypeClass));
+
+        var valueTypeClass = new SomeClassHaveValueTypeFiled(1, 1, "a", true, SomeEnum.First);
+        Assert.AreEqual(true, EntitySaveLoader.IsValueTypeComponent(valueTypeClass));
+    }
+
 }

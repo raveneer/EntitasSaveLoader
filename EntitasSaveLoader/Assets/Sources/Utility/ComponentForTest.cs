@@ -1,5 +1,5 @@
-﻿using Entitas;
-using UnityEngine;
+﻿using System;
+using Entitas;
 
 [Game]
 public class SomeFloatComponent : IComponent
@@ -34,7 +34,7 @@ public class SomeEnumComponent : IComponent
 [Game]
 public class SomeRefTypeComponent : IComponent
 {
-    public GameObject GameObjectRef;
+    public Object ObjectRef;
 }
 
 public enum SomeEnum
