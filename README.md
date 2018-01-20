@@ -1,12 +1,19 @@
-# EntitasSaveLoader v0.2
-can save/load entity and components info in runtime
+# EntitasSaveLoader v0.3
+can save/load entity info with Json file.
 
-https://youtu.be/XLcMHU0O6CM
+https://www.youtube.com/watch?v=TzMSpb3g7_A&feature=youtu.be
 
 https://github.com/sschmid/Entitas-CSharp
 
-## version
-v0.2 : can save/load by Json file.
+## version v0.3
+stop support scriptable oject.
+
+can save/load all entities with 'SaveDataComponent'
+
+fix not group added bug.
+
+## version v0.2
+can save/load by Json file.
 
 ## install
 1. go to asset store, install Json.Net.
@@ -19,7 +26,7 @@ v0.2 : can save/load by Json file.
 3. open tool/entity templete save loader
 4. enter name of templete
 5. save!
-6. you can find scriptable object asset in asAssets\Resources\EntityTemplete
+6. you can find Json asset in asAssets\Resources\EntityTemplete
 
 ## load and make entity
 1. play game
@@ -27,13 +34,20 @@ v0.2 : can save/load by Json file.
 3. type name of templete
 4. make it!
 
-## what is "Entity Templete"?
-: entity templete is entity's context info + components info.
-: this saved to scriptable object asset.
-: using Json.net
+## save/load all entity
+1. add 'savingDataCompontnt' flag to your desired entities.
+2. open tool/entity templete save loader
+3. save all!
+4. you got json file.
+5. load all!
+6. you got new entities. 
 
+## what is "Entity Templete"?
+entity templete is entity's context info + components info. it have values too.
 
 ## next?
-saving all entity templete to disk with file?
-link to google spreadsheet?
-only save by 'save' component?
+clear entities before load?
+
+merge to blueprint?
+
+support scriptable object again?
