@@ -104,7 +104,7 @@ internal class Test_SaveLoader
     }
 
     [Test]
-    public void MakeEntityInfoJson_Ignore_refTypeComponent()
+    public void MakeEntityInfoJson_Ignore_RefTypeComponent()
     {
         //arrange
         var contexts = new Contexts();
