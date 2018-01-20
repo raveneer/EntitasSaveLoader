@@ -103,7 +103,7 @@ public class EntitySaveLoader
         return MakeNewEntity(_templetDictionary[templeteName], _contexts);
     }
 
-    //todo : flag인지 아닌지를 체크해서 flag면 replace, 아니면 addcomponent를 해야한다.
+    
     public static IEntity MakeNewEntity(string json, Contexts contexts)
     {
         if (string.IsNullOrWhiteSpace(json))
@@ -119,9 +119,26 @@ public class EntitySaveLoader
         {
             var component = AnonymousClassJsonParser.MakeNewClassOrNull(entityInfo.ComponentsWrapperJsons[i]);
             //todo : this line works well but test fail...why?
-            int componentLookUpIndex = (int)typeof(GameComponentsLookup).GetField(component.GetType().ToString()).GetValue(null); 
-            ((Entity)newEntity).AddComponent(componentLookUpIndex, component as IComponent);
+
+            System.Diagnostics.Debug.WriteLine(component.GetType().ToString());
+
+            string componenTypeNameRemovedSubFix = RemoveComponentSubfix(component.GetType().ToString());
+            //string componenTypeName = typeof(GameComponentsLookup).GetField(component.GetType().ToString()).Name;
             
+            //todo : 알았다. 이름 끝에 component가 붙으면 안되는거였어!
+            
+            int componentLookUpIndex = (int)(typeof(GameComponentsLookup).GetField(componenTypeNameRemovedSubFix).GetValue(null));
+
+            //todo : if component is flag, not add, just replce.
+            if (IsFlagComponent(component as IComponent))
+            {
+                ((Entity)newEntity).AddComponent(componentLookUpIndex, component as IComponent);
+            }
+            else
+            {
+                ((Entity)newEntity).AddComponent(componentLookUpIndex, component as IComponent);
+            }
+
             //check for adding groups
             var fireEntities = contexts.game.GetGroup(GameMatcher.Fire).GetEntities();
         }
@@ -129,6 +146,19 @@ public class EntitySaveLoader
         return newEntity;
     }
 
+    public static string RemoveComponentSubfix(string nameOfComponent)
+    {
+        if (nameOfComponent.EndsWith("Component"))
+        {
+            return nameOfComponent.Remove(nameOfComponent.Length - 9, 9);
+        }
+        return nameOfComponent;
+    }
+
+    public static bool IsFlagComponent(IComponent component)
+    {
+        return component.GetType().GetFields().Length == 0;
+    }
 
     public static string MakeEntityInfoJson(IEntity entity, Formatting jsonFormatting)
     {
@@ -171,8 +201,8 @@ public class EntitySaveLoader
                     newEntity = contexts.input.CreateEntity();
                     break;
                 case "Ui":
-                    newEntity = contexts.ui.CreateEntity();*/
-                break;
+                    newEntity = contexts.ui.CreateEntity();
+                break;*/
             default:
                 throw new Exception("not support type");
         }

@@ -1,5 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using NUnit.Framework;
+using UnityEngine;
 
 
 internal class Test_EntityJsonUtility
@@ -19,17 +21,34 @@ internal class Test_EntityJsonUtility
     public void NewEntityWithComponentOrNull_Return_NewEntityWithComponentAdded()
     {
         var contexts = new Contexts();
+
         //arrange
         var json =
-            @"{""ContextType"":""Game"",""ComponentsWrapperJsons"":[""{\""TypeName\"":\""SomeIntComponent\"",\""Json\"":\""{\\\""Value\\\"":10}\""}"",""{\""TypeName\"":\""SomeIntComponent\"",\""Json\"":\""{\\\""Value\\\"":20}\""}""]}";
-        //action
+            @"{""ContextType"":""Game"",""ComponentsWrapperJsons"":[""{\""TypeName\"":\""SomeIntComponent\"",\""Json\"":\""{\\\""Value\\\"":10}\""}"",""{\""TypeName\"":\""SomeFloatComponent\"",\""Json\"":\""{\\\""Value\\\"":2.0}\""}""]}";
+
+        //Assert.NotNull(json);
+
         var newEntity = EntitySaveLoader.MakeNewEntity(json, contexts);
         //assert
         Assert.AreEqual(2, newEntity.GetComponents().Length);
         Assert.AreEqual("Game", newEntity.contextInfo.name);
-        Assert.AreEqual(10, ((SomeIntComponent) newEntity.GetComponents()[0]).Value);
-        Assert.AreEqual(20, ((SomeIntComponent) newEntity.GetComponents()[1]).Value);
+        Assert.AreEqual(2.0, ((SomeFloatComponent) newEntity.GetComponents()[0]).Value);
+        Assert.AreEqual(10, ((SomeIntComponent) newEntity.GetComponents()[1]).Value);
     }
+
+    [Test]
+    public void TrimComponentString()
+    {
+        string a = "someComponent";
+        Assert.AreEqual("some", EntitySaveLoader.RemoveComponentSubfix(a));
+
+        string b = "saveDataComponent";
+        Assert.AreEqual("saveData", EntitySaveLoader.RemoveComponentSubfix(b));
+
+
+    }
+
+    
 
     [Test]
     public void ToJson_return_Json_1()
@@ -77,6 +96,21 @@ internal class Test_EntityJsonUtility
         var expected =
             @"{""ContextType"":""Input"",""ComponentsWrapperJsons"":[]}";
         Assert.AreEqual(expected, resultJson);
+    }
+
+    [Test]
+    public void Test_IsFlagComponent()
+    {
+        var flagComponent = new SavingDataComponent();
+
+        Assert.AreEqual(true, EntitySaveLoader.IsFlagComponent(flagComponent));
+
+        var stringComponent = new SomeStringComponent();
+        stringComponent.Value = "name";
+
+        Assert.AreEqual(false, EntitySaveLoader.IsFlagComponent(stringComponent));
+
+
     }
     
 }
