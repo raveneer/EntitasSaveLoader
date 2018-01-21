@@ -102,24 +102,7 @@ internal class Test_SaveLoader
             @"{""ContextType"":""Input"",""ComponentsWrapperJsons"":[]}";
         Assert.AreEqual(expected, resultJson);
     }
-
-    [Test]
-    public void MakeEntityInfoJson_Ignore_RefTypeComponent()
-    {
-        //arrange
-        var contexts = new Contexts();
-        var entity = contexts.game.CreateEntity();
-        entity.AddSomeFloat(10);
-        entity.AddSomeRefType(new object());
-        //action
-        var resultJson = EntitySaveLoader.MakeEntityInfoJson(entity, Formatting.None);
-        Debug.WriteLine(resultJson);
-        //assert
-        var expected =
-            @"{""ContextType"":""Game"",""ComponentsWrapperJsons"":[""{\""TypeName\"":\""SomeFloatComponent\"",\""Json\"":\""{\\\""Value\\\"":10.0}\""}""]}";
-        Assert.AreEqual(expected, resultJson);
-    }
-
+    
     [Test]
     public void Test_IsFlagComponent()
     {
@@ -132,17 +115,21 @@ internal class Test_SaveLoader
 
         Assert.AreEqual(false, EntitySaveLoader.IsFlagComponent(stringComponent));
     }
-
-
-
+    
     [Test]
-    public void Test_IsValueTypeComponent()
+    public void NotSave_IgnoreSaveAttribute()
     {
-        var refTypeClass = new SomeClassHaveRefTypeFiled();
-        Assert.AreEqual(false, EntitySaveLoader.IsValueTypeComponent(refTypeClass));
-
-        var valueTypeClass = new SomeClassHaveValueTypeFiled(1, 1, "a", true, SomeEnum.First);
-        Assert.AreEqual(true, EntitySaveLoader.IsValueTypeComponent(valueTypeClass));
+        var contexts = new Contexts();
+        var entity = contexts.game.CreateEntity();
+        entity.AddSomeFloat(10);
+        entity.isSomeComponentHaveIgnoreSaveAttribute = true;
+        //action
+        var resultJson = EntitySaveLoader.MakeEntityInfoJson(entity, Formatting.None);
+        Debug.WriteLine(resultJson);
+        //assert
+        var expected =
+            @"{""ContextType"":""Game"",""ComponentsWrapperJsons"":[""{\""TypeName\"":\""SomeFloatComponent\"",\""Json\"":\""{\\\""Value\\\"":10.0}\""}""]}";
+        Assert.AreEqual(expected, resultJson);
     }
 
 }

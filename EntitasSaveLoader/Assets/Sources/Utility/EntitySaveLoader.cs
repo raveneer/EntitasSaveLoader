@@ -51,8 +51,7 @@ public class EntitySaveLoader
 
         Debug.Log("LoadEntitiesFromSaveFile done!");
     }
-
-
+    
     public static void ReloadTempletesFromResource()
     {
         var templetAssets = Resources.LoadAll<TextAsset>("EntityTemplete");
@@ -152,15 +151,14 @@ public class EntitySaveLoader
 
         return jsonStr;
     }
-
-
+    
     public static EntityInfo MakeEntityInfo(IEntity entity)
     {
         var componentsWrapperJsons = new List<string>();
 
         foreach (var component in entity.GetComponents())
         {
-            if (IsValueTypeComponent(component))
+            if (!IsHaveIgnoreSaveAttibute(component))
             {
                 componentsWrapperJsons.Add(JsonConvert.SerializeObject(new ClassWrapper(component)));
             }
@@ -184,6 +182,12 @@ public class EntitySaveLoader
         }
 
         File.WriteAllText(path, json);
+    }
+
+    private static bool IsHaveIgnoreSaveAttibute(object obj)
+    {
+        var t = obj.GetType();
+        return Attribute.IsDefined(t, typeof(IgnoreSaveAttribute));
     }
 
     /// <summary>
@@ -221,19 +225,5 @@ public class EntitySaveLoader
         public List<EntityInfo> EntityInfos = new List<EntityInfo>();
     }
     
-    /// <summary>
-    /// check value type or stringType
-    /// </summary>
-    public static bool IsValueTypeComponent(System.Object obj)
-    {
-        var filedsTypes = obj.GetType().GetFields();
-        foreach (var fieldInfo in filedsTypes)
-        {
-            if (!fieldInfo.FieldType.IsValueType && fieldInfo.FieldType.ToString() != "System.String")
-            {
-                return false;
-            }
-        }
-        return true;
-    }
+    
 }
