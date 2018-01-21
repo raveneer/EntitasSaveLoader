@@ -26,6 +26,7 @@ public class SomeGameObjectRefTypeComponent : IComponent
     public GameObject Ref;
 }
 ```
+reduced save file size.
 
 ## version v0.3
 stop support scriptable oject.
