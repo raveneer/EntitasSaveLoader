@@ -126,7 +126,7 @@ public class EntityTempleteSaveLoadWindow : EditorWindow
         {
             var asset = AssetDatabase.LoadAssetAtPath<EntityTemplete>($"Assets/Resources/EntityTemplete/{_assetNameForLoad}.asset");
             //Debug.Log(asset.Json);
-            EntitySaveLoader.MakeNewEntity(asset.Json, Contexts.sharedInstance);
+            EntitySaveLoader.MakeEntity(asset.Json, Contexts.sharedInstance);
             Debug.Log($"{_assetNameForLoad} entity created!");
         }
 

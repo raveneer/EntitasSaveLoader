@@ -1,4 +1,7 @@
 ﻿using Entitas;
+using Newtonsoft.Json;
+using UnityEngine;
+using Object = System.Object;
 
 [Game]
 public class SomeFloatComponent : IComponent
@@ -29,6 +32,32 @@ public class SomeEnumComponent : IComponent
 {
     public SomeEnum Value;
 }
+
+[Game]
+public class SomeRefTypeComponent : IComponent
+{
+    public Object ObjectRef;
+}
+
+[Game]
+public class SomeVector3Component : IComponent
+{
+    public Vector3 Value;
+}
+
+[IgnoreSave]
+[Game]
+public class SomeGameObjectRefTypeComponent : IComponent
+{
+    public GameObject Ref;
+}
+
+[IgnoreSave]
+public class SomeComponentHaveIgnoreSaveAttribute : IComponent
+{
+
+}
+
 
 public enum SomeEnum
 {

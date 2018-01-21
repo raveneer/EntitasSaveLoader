@@ -1,9 +1,0 @@
-{
-  "ContextType": "Game",
-  "ComponentsWrapperJsons": [
-    "{\"TypeName\":\"Fire\",\"Json\":\"{\\\"Strength\\\":111.0}\"}",
-    "{\"TypeName\":\"Name\",\"Json\":\"{\\\"Value\\\":\\\"bbb\\\"}\"}",
-    "{\"TypeName\":\"SomeEnumComponent\",\"Json\":\"{\\\"Value\\\":1}\"}",
-    "{\"TypeName\":\"SomeFloatComponent\",\"Json\":\"{\\\"Value\\\":50.1}\"}"
-  ]
-}

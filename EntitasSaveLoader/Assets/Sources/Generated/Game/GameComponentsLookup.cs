@@ -14,12 +14,16 @@ public static class GameComponentsLookup {
     public const int Position2D = 3;
     public const int SavingData = 4;
     public const int SomeBool = 5;
-    public const int SomeEnum = 6;
-    public const int SomeFloat = 7;
-    public const int SomeInt = 8;
-    public const int SomeString = 9;
+    public const int SomeComponentHaveIgnoreSaveAttribute = 6;
+    public const int SomeEnum = 7;
+    public const int SomeFloat = 8;
+    public const int SomeGameObjectRefType = 9;
+    public const int SomeInt = 10;
+    public const int SomeRefType = 11;
+    public const int SomeString = 12;
+    public const int SomeVector3 = 13;
 
-    public const int TotalComponents = 10;
+    public const int TotalComponents = 14;
 
     public static readonly string[] componentNames = {
         "Fire",
@@ -28,10 +32,14 @@ public static class GameComponentsLookup {
         "Position2D",
         "SavingData",
         "SomeBool",
+        "SomeComponentHaveIgnoreSaveAttribute",
         "SomeEnum",
         "SomeFloat",
+        "SomeGameObjectRefType",
         "SomeInt",
-        "SomeString"
+        "SomeRefType",
+        "SomeString",
+        "SomeVector3"
     };
 
     public static readonly System.Type[] componentTypes = {
@@ -41,9 +49,13 @@ public static class GameComponentsLookup {
         typeof(Position2D),
         typeof(SavingDataComponent),
         typeof(SomeBoolComponent),
+        typeof(SomeComponentHaveIgnoreSaveAttribute),
         typeof(SomeEnumComponent),
         typeof(SomeFloatComponent),
+        typeof(SomeGameObjectRefTypeComponent),
         typeof(SomeIntComponent),
-        typeof(SomeStringComponent)
+        typeof(SomeRefTypeComponent),
+        typeof(SomeStringComponent),
+        typeof(SomeVector3Component)
     };
 }

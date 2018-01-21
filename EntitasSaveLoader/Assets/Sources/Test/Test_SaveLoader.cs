@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 
 
-internal class Test_EntityJsonUtility
+internal class Test_SaveLoader
 {
     [Test]
     public void Entitas_AddComponent_NeedContext()
@@ -18,7 +18,7 @@ internal class Test_EntityJsonUtility
     }
 
     [Test]
-    public void NewEntityWithComponentOrNull_Return_NewEntityWithComponentAdded()
+    public void MakeNewEntity_Return_NewEntityWithComponentAdded()
     {
         var contexts = new Contexts();
 
@@ -28,13 +28,15 @@ internal class Test_EntityJsonUtility
 
         //Assert.NotNull(json);
 
-        var newEntity = EntitySaveLoader.MakeNewEntity(json, contexts);
+        var newEntity = EntitySaveLoader.MakeEntity(json, contexts);
         //assert
         Assert.AreEqual(2, newEntity.GetComponents().Length);
         Assert.AreEqual("Game", newEntity.contextInfo.name);
         Assert.AreEqual(2.0, ((SomeFloatComponent) newEntity.GetComponents()[0]).Value);
         Assert.AreEqual(10, ((SomeIntComponent) newEntity.GetComponents()[1]).Value);
     }
+
+
 
     [Test]
     public void TrimComponentString()
@@ -44,13 +46,10 @@ internal class Test_EntityJsonUtility
 
         string b = "saveDataComponent";
         Assert.AreEqual("saveData", EntitySaveLoader.RemoveComponentSubfix(b));
-
     }
-
     
-
     [Test]
-    public void ToJson_return_Json_1()
+    public void MakeEntityInfoJson_return_Json_Indented()
     {
         //arrange
         var contexts = new Contexts();
@@ -75,7 +74,7 @@ internal class Test_EntityJsonUtility
     }
 
     [Test]
-    public void ToJson_return_Json_2()
+    public void MakeEntityInfoJson_return_Json_NoneFormat()
     {
         //arrange
         var contexts = new Contexts();
@@ -91,7 +90,7 @@ internal class Test_EntityJsonUtility
     }
 
     [Test]
-    public void ToJson_return_Json_WhenNoComponent()
+    public void MakeEntityInfoJson_return_Json_WhenNoComponent()
     {
         //arrange
         var contexts = new Contexts();
@@ -103,7 +102,7 @@ internal class Test_EntityJsonUtility
             @"{""ContextType"":""Input"",""ComponentsWrapperJsons"":[]}";
         Assert.AreEqual(expected, resultJson);
     }
-
+    
     [Test]
     public void Test_IsFlagComponent()
     {
@@ -115,8 +114,22 @@ internal class Test_EntityJsonUtility
         stringComponent.Value = "name";
 
         Assert.AreEqual(false, EntitySaveLoader.IsFlagComponent(stringComponent));
-
-
     }
     
+    [Test]
+    public void NotSave_IgnoreSaveAttribute()
+    {
+        var contexts = new Contexts();
+        var entity = contexts.game.CreateEntity();
+        entity.AddSomeFloat(10);
+        entity.isSomeComponentHaveIgnoreSaveAttribute = true;
+        //action
+        var resultJson = EntitySaveLoader.MakeEntityInfoJson(entity, Formatting.None);
+        Debug.WriteLine(resultJson);
+        //assert
+        var expected =
+            @"{""ContextType"":""Game"",""ComponentsWrapperJsons"":[""{\""TypeName\"":\""SomeFloatComponent\"",\""Json\"":\""{\\\""Value\\\"":10.0}\""}""]}";
+        Assert.AreEqual(expected, resultJson);
+    }
+
 }
