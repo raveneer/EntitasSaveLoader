@@ -1,9 +1,31 @@
-# EntitasSaveLoader v0.3
+# EntitasSaveLoader v0.4
 can save/load entity info with Json file.
 
 https://www.youtube.com/watch?v=TzMSpb3g7_A&feature=youtu.be
 
 https://github.com/sschmid/Entitas-CSharp
+
+## version v0.4
+added  [IgnoreSave] class attribute. with this, component will not be saved.
+
+some class reference can be serialized, some not. checking this can be difficult. so, add attribute hint for SaveLoader please.
+
+ex) Unity.Vector3 can be save by this SaveLoader, but GameObject not. so we need to add [IgnoreSave] attribute to. (else, you will have null value component)
+
+```
+[Game]
+public class SomeVector3Component : IComponent
+{
+    public Vector3 Value;
+}
+
+[IgnoreSave]
+[Game]
+public class SomeGameObjectRefTypeComponent : IComponent
+{
+    public GameObject Ref;
+}
+```
 
 ## version v0.3
 stop support scriptable oject.
