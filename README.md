@@ -9,7 +9,30 @@ this is still experimental.
 
 ## version v0.5
 entity templete file is now clean Json format.
-
+```
+ {
+      "ContextType": "Game",
+      "Components": {
+        "Fire": {
+          "Strength": 0
+        },
+        "Name": {
+          "Value": "fire1"
+        },
+        "Position2D": {
+          "X": 1,
+          "Y": 2
+        },
+        "SavingDataComponent": {},
+        "SomeFloatComponent": {
+          "Value": 0
+        },
+        "SomeStringComponent": {
+          "Value": "abcde"
+        }
+      }
+    }
+```
 save file size reduces.
 
 
