@@ -36,7 +36,7 @@ public class SomeEnumComponent : IComponent
 [Game]
 public class SomeRefTypeComponent : IComponent
 {
-    public Object ObjectRef;
+    public Coord CoordRef;
 }
 
 [Game]
@@ -58,6 +58,11 @@ public class SomeComponentHaveIgnoreSaveAttribute : IComponent
 
 }
 
+public class Coord
+{
+    public int X;
+    public int Y;
+}
 
 public enum SomeEnum
 {

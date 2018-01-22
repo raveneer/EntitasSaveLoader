@@ -47,7 +47,7 @@ public class EntityTempleteSaveLoadWindow : EditorWindow
             {
                 var asset = CreateInstance<EntityTemplete>();
                 asset.TempleteName = _assetNameForSave;
-                EntitySaveLoader.EntityInfoWriteToFile(_entity, _assetNameForSave);
+                EntitySaveLoader.GenerateEntityTemplete(_entity, _assetNameForSave);
                 AssetDatabase.Refresh();
                 EntitySaveLoader.ReloadTempletesFromResource();
                 Debug.Log($"{_assetNameForSave} EntityTemplete text file created!");
@@ -64,7 +64,7 @@ public class EntityTempleteSaveLoadWindow : EditorWindow
 
         if (GUILayout.Button("Make new entity!"))
         {
-            EntitySaveLoader.MakeEntityFromTemplete(_assetNameForLoad, Contexts.sharedInstance);
+            EntitySaveLoader.MakeEntityFromTempleteName(_assetNameForLoad, Contexts.sharedInstance);
         }
 
         #endregion
@@ -73,7 +73,7 @@ public class EntityTempleteSaveLoadWindow : EditorWindow
         _saveFileName = EditorGUILayout.TextField("saveFileName:", _saveFileName);
         if (GUILayout.Button("Save all"))
         {
-            EntitySaveLoader.SaveEntitiesInScene(Contexts.sharedInstance, _saveFileName);
+            EntitySaveLoader.SaveAllEntitiesInScene(Contexts.sharedInstance, _saveFileName);
             AssetDatabase.Refresh();
         }
 
@@ -95,41 +95,3 @@ public class EntityTempleteSaveLoadWindow : EditorWindow
         }
     }
 }
-
-
-
-/*scriptableObject support  needed?
- 
-    
-        //can save to scriptable object asset
-        
-
-        if (GUILayout.Button("Save EntityTemplete to asset"))
-        {
-            if (_entity != null)
-            {
-                var asset = CreateInstance<EntityTemplete>();
-                asset.TempleteName = _assetNameForSave;
-                asset.Json = EntitySaveLoader.MakeEntityInfoJson(_entity, Formatting.None);
-                AssetDatabase.CreateAsset(asset, $"Assets/Resources/EntityTemplete/{_assetNameForSave}.asset");
-                AssetDatabase.SaveAssets();
-                AssetDatabase.Refresh();
-                Debug.Log($"{_assetNameForSave} EntityTemplete asset created!");
-            }
-        }
-
-  
-        //can make entity from SO asset
-        _assetNameForLoad = EditorGUILayout.TextField("Templete Name :", _assetNameForLoad);
-
-        if (GUILayout.Button("Make new Entity from asset!"))
-        {
-            var asset = AssetDatabase.LoadAssetAtPath<EntityTemplete>($"Assets/Resources/EntityTemplete/{_assetNameForLoad}.asset");
-            //Debug.Log(asset.Json);
-            EntitySaveLoader.MakeEntity(asset.Json, Contexts.sharedInstance);
-            Debug.Log($"{_assetNameForLoad} entity created!");
-        }
-
-        //can make entity from json file
-        _assetNameForLoad = EditorGUILayout.TextField("Templete Name :", _assetNameForLoad);
-*/
