@@ -8,7 +8,7 @@ https://github.com/sschmid/Entitas-CSharp
 this is still experimental.
 
 ## version v0.5
-maden entity templete file is now clean Json format.
+entity templete file is now clean Json format.
 
 save file size reduces.
 
