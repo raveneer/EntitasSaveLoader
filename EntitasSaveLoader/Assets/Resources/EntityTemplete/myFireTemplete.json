@@ -1,0 +1,22 @@
+{
+  "ContextType": "Game",
+  "Components": {
+    "Fire": {
+      "Strength": 0.0
+    },
+    "Name": {
+      "Value": "fire1"
+    },
+    "Position2D": {
+      "X": 1.0,
+      "Y": 2.0
+    },
+    "SavingDataComponent": {},
+    "SomeFloatComponent": {
+      "Value": 0.0
+    },
+    "SomeStringComponent": {
+      "Value": "abcde"
+    }
+  }
+}

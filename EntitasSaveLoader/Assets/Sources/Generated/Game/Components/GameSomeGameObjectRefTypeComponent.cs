@@ -6,25 +6,22 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-
-using UnityEngine;
-
 public partial class GameEntity {
 
     public SomeGameObjectRefTypeComponent someGameObjectRefType { get { return (SomeGameObjectRefTypeComponent)GetComponent(GameComponentsLookup.SomeGameObjectRefType); } }
     public bool hasSomeGameObjectRefType { get { return HasComponent(GameComponentsLookup.SomeGameObjectRefType); } }
 
-    public void AddSomeGameObjectRefType(GameObject newObjectRef) {
+    public void AddSomeGameObjectRefType(UnityEngine.GameObject newRef) {
         var index = GameComponentsLookup.SomeGameObjectRefType;
         var component = CreateComponent<SomeGameObjectRefTypeComponent>(index);
-        component.Ref = newObjectRef;
+        component.Ref = newRef;
         AddComponent(index, component);
     }
 
-    public void ReplaceSomeGameObjectRefType(GameObject newObjectRef) {
+    public void ReplaceSomeGameObjectRefType(UnityEngine.GameObject newRef) {
         var index = GameComponentsLookup.SomeGameObjectRefType;
         var component = CreateComponent<SomeGameObjectRefTypeComponent>(index);
-        component.Ref = newObjectRef;
+        component.Ref = newRef;
         ReplaceComponent(index, component);
     }
 

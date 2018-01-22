@@ -24,16 +24,14 @@ internal class Test_SaveLoader
 
         //arrange
         var json =
-            @"{""ContextType"":""Game"",""ComponentsWrapperJsons"":[""{\""TypeName\"":\""SomeIntComponent\"",\""Json\"":\""{\\\""Value\\\"":10}\""}"",""{\""TypeName\"":\""SomeFloatComponent\"",\""Json\"":\""{\\\""Value\\\"":2.0}\""}""]}";
+            @"{""ContextType"":""Game"",""Components"":{""SomeIntComponent"":{""Value"":10},""SomeStringComponent"":{""Value"":""aaa""}}}";
 
-        //Assert.NotNull(json);
-
-        var newEntity = EntitySaveLoader.MakeEntity(json, contexts);
+        var newEntity = EntitySaveLoader.MakeEntityFromJson(json, contexts);
         //assert
         Assert.AreEqual(2, newEntity.GetComponents().Length);
         Assert.AreEqual("Game", newEntity.contextInfo.name);
-        Assert.AreEqual(2.0, ((SomeFloatComponent) newEntity.GetComponents()[0]).Value);
-        Assert.AreEqual(10, ((SomeIntComponent) newEntity.GetComponents()[1]).Value);
+        Assert.AreEqual(10, ((SomeIntComponent) newEntity.GetComponents()[0]).Value);
+        Assert.AreEqual("aaa", ((SomeStringComponent) newEntity.GetComponents()[1]).Value);
     }
 
 
@@ -55,7 +53,7 @@ internal class Test_SaveLoader
         var contexts = new Contexts();
         var entity = contexts.game.CreateEntity();
         var c1 = new SomeIntComponent {Value = 10};
-        var c2 = new SomeIntComponent {Value = 20};
+        var c2 = new SomeFloatComponent {Value = 2.0f};
         entity.AddComponent(0, c1);
         entity.AddComponent(1, c2);
         //action
@@ -65,10 +63,14 @@ internal class Test_SaveLoader
         var expected =
             @"{
   ""ContextType"": ""Game"",
-  ""ComponentsWrapperJsons"": [
-    ""{\""TypeName\"":\""SomeIntComponent\"",\""Json\"":\""{\\\""Value\\\"":10}\""}"",
-    ""{\""TypeName\"":\""SomeIntComponent\"",\""Json\"":\""{\\\""Value\\\"":20}\""}""
-  ]
+  ""Components"": {
+    ""SomeIntComponent"": {
+      ""Value"": 10
+    },
+    ""SomeFloatComponent"": {
+      ""Value"": 2.0
+    }
+  }
 }";
         Assert.AreEqual(expected, resultJson);
     }
@@ -83,9 +85,11 @@ internal class Test_SaveLoader
         entity.AddComponent(0, c1);
         //action
         var resultJson = EntitySaveLoader.MakeEntityInfoJson(entity, Formatting.None);
+        Debug.WriteLine(resultJson);
+
         //assert
         var expected =
-            @"{""ContextType"":""Input"",""ComponentsWrapperJsons"":[""{\""TypeName\"":\""SomeBoolComponent\"",\""Json\"":\""{\\\""Value\\\"":true}\""}""]}";
+            @"{""ContextType"":""Input"",""Components"":{""SomeBoolComponent"":{""Value"":true}}}";
         Assert.AreEqual(expected, resultJson);
     }
 
@@ -97,9 +101,11 @@ internal class Test_SaveLoader
         var entity = contexts.input.CreateEntity();
         //action
         var resultJson = EntitySaveLoader.MakeEntityInfoJson(entity, Formatting.None);
+        Debug.WriteLine(resultJson);
+
         //assert
         var expected =
-            @"{""ContextType"":""Input"",""ComponentsWrapperJsons"":[]}";
+            @"{""ContextType"":""Input"",""Components"":{}}";
         Assert.AreEqual(expected, resultJson);
     }
     
@@ -128,8 +134,25 @@ internal class Test_SaveLoader
         Debug.WriteLine(resultJson);
         //assert
         var expected =
-            @"{""ContextType"":""Game"",""ComponentsWrapperJsons"":[""{\""TypeName\"":\""SomeFloatComponent\"",\""Json\"":\""{\\\""Value\\\"":10.0}\""}""]}";
+            @"{""ContextType"":""Game"",""Components"":{""SomeFloatComponent"":{""Value"":10.0}}}";
         Assert.AreEqual(expected, resultJson);
+    }
+
+    [Test]
+    public void Support_RefTypeFiled()
+    {
+        var contexts = new Contexts();
+        var entity = contexts.game.CreateEntity();
+        var t1 = new SomeRefTypeComponent() { CoordRef = new Coord(){X = 10, Y = 20} };
+        entity.AddComponent(0, t1);
+
+        var resultJson = EntitySaveLoader.MakeEntityInfoJson(entity, Formatting.Indented);
+        Debug.WriteLine(resultJson);
+
+        var newEntity = EntitySaveLoader.MakeEntityFromJson(resultJson, contexts) as GameEntity;
+        Assert.AreEqual(10, newEntity.someRefType.CoordRef.X);
+        Assert.AreEqual(20, newEntity.someRefType.CoordRef.Y);
+
     }
 
 }
