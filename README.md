@@ -1,9 +1,17 @@
-# EntitasSaveLoader v0.4
+# EntitasSaveLoader v0.5
 can save/load entity info with Json file.
 
 https://www.youtube.com/watch?v=TzMSpb3g7_A&feature=youtu.be
 
 https://github.com/sschmid/Entitas-CSharp
+
+this is still experimental.
+
+## version v0.5
+maden entity templete file is now clean Json format.
+
+save file size reduces.
+
 
 ## version v0.4
 added  [IgnoreSave] class attribute. with this, component will not be saved.
@@ -74,3 +82,5 @@ clear entities before load?
 merge to blueprint?
 
 support scriptable object again?
+
+link to google spread Sheet?
