@@ -24,7 +24,7 @@ internal class Test_SaveLoader
 
         //arrange
         var json =
-            @"{""ContextType"":""Game"",""Components"":{""SomeIntComponent"":{""Value"":10},""SomeStringComponent"":{""Value"":""aaa""}}}";
+            @"{""Context"":""Game"",""Components"":{""SomeIntComponent"":{""Value"":10},""SomeStringComponent"":{""Value"":""aaa""}}}";
 
         var newEntity = EntitySaveLoader.MakeEntityFromJson(json, contexts);
         //assert
@@ -33,9 +33,7 @@ internal class Test_SaveLoader
         Assert.AreEqual(10, ((SomeIntComponent) newEntity.GetComponents()[0]).Value);
         Assert.AreEqual("aaa", ((SomeStringComponent) newEntity.GetComponents()[1]).Value);
     }
-
-
-
+    
     [Test]
     public void TrimComponentString()
     {
@@ -57,12 +55,13 @@ internal class Test_SaveLoader
         entity.AddComponent(0, c1);
         entity.AddComponent(1, c2);
         //action
-        var resultJson = EntitySaveLoader.MakeEntityInfoJson(entity, Formatting.Indented);
+        var resultJson = EntitySaveLoader.MakeEntityInfoJson(entity, Formatting.Indented, "newTemplete");
         Debug.WriteLine(resultJson);
         //assert
         var expected =
             @"{
-  ""ContextType"": ""Game"",
+  ""Name"": ""newTemplete"",
+  ""Context"": ""Game"",
   ""Components"": {
     ""SomeIntComponent"": {
       ""Value"": 10
@@ -84,12 +83,12 @@ internal class Test_SaveLoader
         var c1 = new SomeBoolComponent {Value = true};
         entity.AddComponent(0, c1);
         //action
-        var resultJson = EntitySaveLoader.MakeEntityInfoJson(entity, Formatting.None);
+        var resultJson = EntitySaveLoader.MakeEntityInfoJson(entity, Formatting.None, null);
         Debug.WriteLine(resultJson);
 
         //assert
         var expected =
-            @"{""ContextType"":""Input"",""Components"":{""SomeBoolComponent"":{""Value"":true}}}";
+            @"{""Name"":null,""Context"":""Input"",""Components"":{""SomeBoolComponent"":{""Value"":true}}}";
         Assert.AreEqual(expected, resultJson);
     }
 
@@ -100,12 +99,12 @@ internal class Test_SaveLoader
         var contexts = new Contexts();
         var entity = contexts.input.CreateEntity();
         //action
-        var resultJson = EntitySaveLoader.MakeEntityInfoJson(entity, Formatting.None);
+        var resultJson = EntitySaveLoader.MakeEntityInfoJson(entity, Formatting.None, null);
         Debug.WriteLine(resultJson);
 
         //assert
         var expected =
-            @"{""ContextType"":""Input"",""Components"":{}}";
+            @"{""Name"":null,""Context"":""Input"",""Components"":{}}";
         Assert.AreEqual(expected, resultJson);
     }
     
@@ -130,11 +129,11 @@ internal class Test_SaveLoader
         entity.AddSomeFloat(10);
         entity.isSomeComponentHaveIgnoreSaveAttribute = true;
         //action
-        var resultJson = EntitySaveLoader.MakeEntityInfoJson(entity, Formatting.None);
+        var resultJson = EntitySaveLoader.MakeEntityInfoJson(entity, Formatting.None, null);
         Debug.WriteLine(resultJson);
         //assert
         var expected =
-            @"{""ContextType"":""Game"",""Components"":{""SomeFloatComponent"":{""Value"":10.0}}}";
+            @"{""Name"":null,""Context"":""Game"",""Components"":{""SomeFloatComponent"":{""Value"":10.0}}}";
         Assert.AreEqual(expected, resultJson);
     }
 
@@ -146,7 +145,7 @@ internal class Test_SaveLoader
         var t1 = new SomeRefTypeComponent() { CoordRef = new Coord(){X = 10, Y = 20} };
         entity.AddComponent(0, t1);
 
-        var resultJson = EntitySaveLoader.MakeEntityInfoJson(entity, Formatting.Indented);
+        var resultJson = EntitySaveLoader.MakeEntityInfoJson(entity, Formatting.Indented, null);
         Debug.WriteLine(resultJson);
 
         var newEntity = EntitySaveLoader.MakeEntityFromJson(resultJson, contexts) as GameEntity;

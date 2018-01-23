@@ -18,7 +18,8 @@ public class EntitySaveLoader
         var saveData = new EntitiesSaveData();
         foreach (var savingEntity in savingEntities)
         {
-            saveData.EntityInfos.Add(MakeEntityInfo(savingEntity));
+            //todo : saveAll 에서는 템플릿 이름을 지어줄 수가 없다...
+            saveData.EntityInfos.Add(MakeEntityInfo(savingEntity, null));
         }
 
         var json = JsonConvert.SerializeObject(saveData, Formatting.Indented);
@@ -76,18 +77,18 @@ public class EntitySaveLoader
             Debug.Log("empty json!");
         }
 
-        var entityInfo = JsonConvert.DeserializeObject<EntityInfo>(json);
+        var entityInfo = JsonConvert.DeserializeObject<EntityTemplete>(json);
         return MakeEntityFromEntityInfo(entityInfo, contexts);
     }
 
     //todo : support input, ui etc... components
-    private static IEntity MakeEntityFromEntityInfo(EntityInfo entityInfo, Contexts contexts)
+    private static IEntity MakeEntityFromEntityInfo(EntityTemplete entityTemplete, Contexts contexts)
     {
-        IEntity newEntity = MakeEntityByContext(entityInfo, contexts);
+        IEntity newEntity = MakeEntityByContext(entityTemplete, contexts);
 
         //add components
         //deserialized componentValue is JObject. Jobject can be casted with dynamic (ToObject)
-        foreach (KeyValuePair<string, dynamic> componentInfo in entityInfo.Components)
+        foreach (KeyValuePair<string, dynamic> componentInfo in entityTemplete.Components)
         {
             var component = componentInfo.Value.ToObject(Type.GetType(componentInfo.Key));
             var componentLookUpName = EntitySaveLoader.RemoveComponentSubfix(componentInfo.Key);
@@ -127,19 +128,20 @@ public class EntitySaveLoader
     /// only value or string field have components serialized.
     /// ref type componets ignored.
     /// </summary>
-    public static string MakeEntityInfoJson(IEntity entity, Formatting jsonFormatting)
+    public static string MakeEntityInfoJson(IEntity entity, Formatting jsonFormatting, string templeteName)
     {
-        EntityInfo entityInfo = MakeEntityInfo(entity);
-        var jsonStr = JsonConvert.SerializeObject(entityInfo, jsonFormatting);
+        EntityTemplete entityTemplete = MakeEntityInfo(entity, templeteName);
+        var jsonStr = JsonConvert.SerializeObject(entityTemplete, jsonFormatting);
 
         return jsonStr;
     }
     
-    public static EntityInfo MakeEntityInfo(IEntity entity)
+    public static EntityTemplete MakeEntityInfo(IEntity entity, string templeteName)
     {
-        var entityInfo = new EntityInfo
+        var entityInfo = new EntityTemplete
         {
-            ContextType = entity.contextInfo.name
+            Name = templeteName,
+            Context = entity.contextInfo.name
         };
 
         foreach (var component in entity.GetComponents())
@@ -173,12 +175,12 @@ public class EntitySaveLoader
     }
 
     /// <summary>
-    ///     make nested Json file and save to Resource/EntityTemplete.
+    ///     make Json file and save to Resource/EntityTemplete.
     /// </summary>
-    public static void GenerateEntityTemplete(IEntity entity, string fileName)
+    public static void GenerateEntityTemplete(IEntity entity, string tmepleteName)
     {
-        var json = MakeEntityInfoJson(entity, Formatting.Indented);
-        var path = $"Assets/Resources/EntityTemplete/{fileName}.json";
+        var json = MakeEntityInfoJson(entity, Formatting.Indented, tmepleteName);
+        var path = $"Assets/Resources/EntityTemplete/{tmepleteName}.json";
 
         if (!File.Exists(path))
         {
@@ -199,11 +201,11 @@ public class EntitySaveLoader
     /// <summary>
     /// only make new Entity. not add components
     /// </summary>
-    private static IEntity MakeEntityByContext(EntityInfo entityInfo, Contexts contexts)
+    private static IEntity MakeEntityByContext(EntityTemplete entityTemplete, Contexts contexts)
     {
-        System.Diagnostics.Debug.WriteLine($"entityInfo.ContextType : {entityInfo.ContextType}");
+        System.Diagnostics.Debug.WriteLine($"entityInfo.ContextType : {entityTemplete.Context}");
         IEntity newEntity = null;
-        switch (entityInfo.ContextType)
+        switch (entityTemplete.Context)
         {
             case "Game":
                 newEntity = contexts.game.CreateEntity();
@@ -215,7 +217,7 @@ public class EntitySaveLoader
                 newEntity = contexts.ui.CreateEntity();
             break;*/
             default:
-                throw new Exception($" {entityInfo.ContextType} is not support type. if you have atribute, add it EntitySaveLoaderMakeEntityByContext() ");
+                throw new Exception($" {entityTemplete.Context} is not support type. if you have atribute, add it EntitySaveLoaderMakeEntityByContext() ");
         }
 
         return newEntity;
@@ -225,15 +227,16 @@ public class EntitySaveLoader
     #endregion
 
 
-    public class EntityInfo
+    public class EntityTemplete
     {
-        public string ContextType;
+        public string Name;
+        public string Context;
         public Dictionary<string, object> Components = new Dictionary<string, object>();
     }
 
     public class EntitiesSaveData
     {
-        public List<EntityInfo> EntityInfos = new List<EntityInfo>();
+        public List<EntityTemplete> EntityInfos = new List<EntityTemplete>();
     }
     
     
