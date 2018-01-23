@@ -21,9 +21,10 @@ public static class GameComponentsLookup {
     public const int SomeInt = 10;
     public const int SomeRefType = 11;
     public const int SomeString = 12;
-    public const int SomeVector3 = 13;
+    public const int SomeTag = 13;
+    public const int SomeVector3 = 14;
 
-    public const int TotalComponents = 14;
+    public const int TotalComponents = 15;
 
     public static readonly string[] componentNames = {
         "Fire",
@@ -39,6 +40,7 @@ public static class GameComponentsLookup {
         "SomeInt",
         "SomeRefType",
         "SomeString",
+        "SomeTag",
         "SomeVector3"
     };
 
@@ -56,6 +58,7 @@ public static class GameComponentsLookup {
         typeof(SomeIntComponent),
         typeof(SomeRefTypeComponent),
         typeof(SomeStringComponent),
+        typeof(SomeTagComponent),
         typeof(SomeVector3Component)
     };
 }

@@ -1,0 +1,103 @@
+{
+  "EntityInfos": [
+    {
+      "Name": null,
+      "Context": "Game",
+      "Tags": [
+        "SavingData",
+        "SomeTag"
+      ],
+      "Components": {
+        "Fire": {
+          "Strength": 1.0
+        },
+        "Name": {
+          "Value": "ddd"
+        },
+        "Position2D": {
+          "X": 0.0,
+          "Y": 0.0
+        }
+      }
+    },
+    {
+      "Name": null,
+      "Context": "Game",
+      "Tags": [
+        "SavingData",
+        "SomeTag"
+      ],
+      "Components": {
+        "Fire": {
+          "Strength": 1.0
+        },
+        "Name": {
+          "Value": "ddd"
+        },
+        "Position2D": {
+          "X": 0.0,
+          "Y": 0.0
+        }
+      }
+    },
+    {
+      "Name": null,
+      "Context": "Game",
+      "Tags": [
+        "SavingData",
+        "SomeTag"
+      ],
+      "Components": {
+        "Fire": {
+          "Strength": 1.0
+        },
+        "Name": {
+          "Value": "ddd"
+        },
+        "Position2D": {
+          "X": 0.0,
+          "Y": 0.0
+        }
+      }
+    },
+    {
+      "Name": null,
+      "Context": "Game",
+      "Tags": [
+        "SavingData",
+        "SomeTag"
+      ],
+      "Components": {
+        "Fire": {
+          "Strength": 1.0
+        },
+        "Name": {
+          "Value": "ddd"
+        },
+        "Position2D": {
+          "X": 0.0,
+          "Y": 0.0
+        }
+      }
+    },
+    {
+      "Name": null,
+      "Context": "Game",
+      "Tags": [
+        "SavingData"
+      ],
+      "Components": {
+        "Fire": {
+          "Strength": 1.0
+        },
+        "Name": {
+          "Value": "ddd"
+        },
+        "Position2D": {
+          "X": 0.0,
+          "Y": 0.0
+        }
+      }
+    }
+  ]
+}

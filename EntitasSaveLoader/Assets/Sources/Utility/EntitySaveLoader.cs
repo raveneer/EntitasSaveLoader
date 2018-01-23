@@ -85,7 +85,20 @@ public class EntitySaveLoader
     private static IEntity MakeEntityFromEntityInfo(EntityTemplete entityTemplete, Contexts contexts)
     {
         IEntity newEntity = MakeEntityByContext(entityTemplete, contexts);
+        
+        //add tag components
+        foreach (var tagName in entityTemplete.Tags)
+        {
+            var componentLookUpName = RemoveComponentSubfix(tagName);
+            int componentLookUpIndex = (int)typeof(GameComponentsLookup).GetField(componentLookUpName).GetValue(null);
+            var componentType = GameComponentsLookup.componentTypes[componentLookUpIndex];
+            var tagComponent = Activator.CreateInstance(componentType);
 
+            //Debug.Log($"componentLookUpIndex : {componentLookUpIndex}");
+
+            ((Entity)newEntity).AddComponent(componentLookUpIndex, tagComponent as IComponent);
+        }
+        
         //add components
         //deserialized componentValue is JObject. Jobject can be casted with dynamic (ToObject)
         foreach (KeyValuePair<string, dynamic> componentInfo in entityTemplete.Components)
@@ -97,14 +110,7 @@ public class EntitySaveLoader
 
             //Debug.Log($"componentLookUpIndex : {componentLookUpIndex}");
 
-            if (IsFlagComponent(component as IComponent))
-            {
-                ((Entity)newEntity).AddComponent(componentLookUpIndex, component as IComponent);
-            }
-            else
-            {
-                ((Entity)newEntity).AddComponent(componentLookUpIndex, component as IComponent);
-            }
+            ((Entity)newEntity).AddComponent(componentLookUpIndex, component as IComponent);
         }
         
         return newEntity;
@@ -150,7 +156,15 @@ public class EntitySaveLoader
             if (!IsHaveIgnoreSaveAttibute(component))
             {
                 string componentName = EntitySaveLoader.RemoveComponentSubfix(component.GetType().ToString());
-                entityInfo.Components.Add(componentName, component);
+
+                if (IsFlagComponent(component))
+                {
+                    entityInfo.Tags.Add(componentName);
+                }
+                else
+                {
+                    entityInfo.Components.Add(componentName, component);
+                }
             }
         }
         
@@ -233,6 +247,7 @@ public class EntitySaveLoader
     {
         public string Name;
         public string Context;
+        public List<string> Tags = new List<string>();
         public Dictionary<string, object> Components = new Dictionary<string, object>();
     }
 
