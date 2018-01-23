@@ -85,18 +85,28 @@ public class EntitySaveLoader
     private static IEntity MakeEntityFromEntityInfo(EntityTemplete entityTemplete, Contexts contexts)
     {
         IEntity newEntity = MakeEntityByContext(entityTemplete, contexts);
-        
-        //add tag components
-        foreach (var tagName in entityTemplete.Tags)
+
+        if (! string.IsNullOrEmpty(entityTemplete.Tags))
         {
-            var componentLookUpName = RemoveComponentSubfix(tagName);
-            int componentLookUpIndex = (int)typeof(GameComponentsLookup).GetField(componentLookUpName).GetValue(null);
-            var componentType = GameComponentsLookup.componentTypes[componentLookUpIndex];
-            var tagComponent = Activator.CreateInstance(componentType);
+            System.Diagnostics.Debug.WriteLine($"tag : {entityTemplete.Tags}");
+            var parsedTags = entityTemplete.Tags.Split(',');
+            //add tag components
+            foreach (var tagName in parsedTags)
+            {
+                if (tagName == "")
+                {
+                    continue;
+                }
 
-            //Debug.Log($"componentLookUpIndex : {componentLookUpIndex}");
+                var componentLookUpName = RemoveComponentSubfix(tagName);
+                int componentLookUpIndex = (int)typeof(GameComponentsLookup).GetField(componentLookUpName).GetValue(null);
+                var componentType = GameComponentsLookup.componentTypes[componentLookUpIndex];
+                var tagComponent = Activator.CreateInstance(componentType);
 
-            ((Entity)newEntity).AddComponent(componentLookUpIndex, tagComponent as IComponent);
+                //Debug.Log($"componentLookUpIndex : {componentLookUpIndex}");
+
+                ((Entity)newEntity).AddComponent(componentLookUpIndex, tagComponent as IComponent);
+            }
         }
         
         //add components
@@ -159,7 +169,7 @@ public class EntitySaveLoader
 
                 if (IsFlagComponent(component))
                 {
-                    entityInfo.Tags.Add(componentName);
+                    entityInfo.Tags += componentName +",";
                 }
                 else
                 {
@@ -239,7 +249,6 @@ public class EntitySaveLoader
         return newEntity;
     }
 
-
     #endregion
 
 
@@ -247,7 +256,7 @@ public class EntitySaveLoader
     {
         public string Name;
         public string Context;
-        public List<string> Tags = new List<string>();
+        public string Tags;
         public Dictionary<string, object> Components = new Dictionary<string, object>();
     }
 
@@ -255,6 +264,7 @@ public class EntitySaveLoader
     {
         public List<EntityTemplete> EntityInfos = new List<EntityTemplete>();
     }
+    
     
     
 }

@@ -24,14 +24,13 @@ internal class Test_SaveLoader
 
         //arrange
         var json =
-            @"{""Context"":""Game"",""Components"":{""SomeIntComponent"":{""Value"":10},""SomeStringComponent"":{""Value"":""aaa""}}}";
+            @"{""Name"":null,""Context"":""Game"",""Tags"":""SavingData,SomeTag,"",""Components"":{""SomeInt"":{""Value"":10}}}";
 
-        var newEntity = EntitySaveLoader.MakeEntityFromJson(json, contexts);
+        var newEntity = EntitySaveLoader.MakeEntityFromJson(json, contexts) as GameEntity;
         //assert
-        Assert.AreEqual(2, newEntity.GetComponents().Length);
+        Assert.AreEqual(3, newEntity.GetComponents().Length);
         Assert.AreEqual("Game", newEntity.contextInfo.name);
-        Assert.AreEqual(10, ((SomeIntComponent) newEntity.GetComponents()[0]).Value);
-        Assert.AreEqual("aaa", ((SomeStringComponent) newEntity.GetComponents()[1]).Value);
+        Assert.AreEqual(10,newEntity.someInt.Value);
     }
 
     [Test]
@@ -41,7 +40,7 @@ internal class Test_SaveLoader
 
         //arrange
         var json =
-            @"{""Name"":null,""Context"":""Game"",""Tags"":[""SavingData"",""SomeTag""],""Components"":{""SomeBool"":{""Value"":true}}}";
+            @"{""Name"":null,""Context"":""Game"",""Tags"":""SavingData,SomeTag"",""Components"":{""SomeBool"":{""Value"":true}}}";
 
         var newEntity = EntitySaveLoader.MakeEntityFromJson(json, contexts) as GameEntity;
         //assert
@@ -78,7 +77,7 @@ internal class Test_SaveLoader
             @"{
   ""Name"": ""newTemplete"",
   ""Context"": ""Game"",
-  ""Tags"": [],
+  ""Tags"": null,
   ""Components"": {
     ""SomeInt"": {
       ""Value"": 10
@@ -105,7 +104,7 @@ internal class Test_SaveLoader
 
         //assert
         var expected =
-            @"{""Name"":null,""Context"":""Input"",""Tags"":[],""Components"":{""SomeBool"":{""Value"":true}}}";
+            @"{""Name"":null,""Context"":""Input"",""Tags"":null,""Components"":{""SomeBool"":{""Value"":true}}}";
         Assert.AreEqual(expected, resultJson);
     }
 
@@ -121,7 +120,7 @@ internal class Test_SaveLoader
 
         //assert
         var expected =
-            @"{""Name"":null,""Context"":""Input"",""Tags"":[],""Components"":{}}";
+            @"{""Name"":null,""Context"":""Input"",""Tags"":null,""Components"":{}}";
         Assert.AreEqual(expected, resultJson);
     }
     
@@ -150,7 +149,7 @@ internal class Test_SaveLoader
         Debug.WriteLine(resultJson);
         //assert
         var expected =
-            @"{""Name"":null,""Context"":""Game"",""Tags"":[],""Components"":{""SomeFloat"":{""Value"":10.0}}}";
+            @"{""Name"":null,""Context"":""Game"",""Tags"":null,""Components"":{""SomeFloat"":{""Value"":10.0}}}";
         Assert.AreEqual(expected, resultJson);
     }
 
@@ -187,7 +186,7 @@ internal class Test_SaveLoader
 
         //assert
         var expected =
-            @"{""Name"":null,""Context"":""Game"",""Tags"":[""SavingData"",""SomeTag""],""Components"":{""SomeBool"":{""Value"":true}}}";
+            @"{""Name"":null,""Context"":""Game"",""Tags"":""SavingData,SomeTag,"",""Components"":{""SomeBool"":{""Value"":true}}}";
         Assert.AreEqual(expected, resultJson);
     }
 
