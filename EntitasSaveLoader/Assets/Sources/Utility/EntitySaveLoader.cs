@@ -1,17 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Entitas;
 using Newtonsoft.Json;
 using UnityEngine;
 using System.Reflection;
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 
 public class EntitySaveLoader
 {
     private static readonly Dictionary<string, string> _templetDictionary = new Dictionary<string, string>();
+
+    private static readonly Dictionary<string, EntityTemplete> _Templetes = new Dictionary<string, EntityTemplete>();
+
     private static bool _dictionaryReady;
-    
+    private static bool _groupDictionaryReady;
+
     public static void SaveAllEntitiesInScene(Contexts contexts, string saveFileName)
     {
         var savingEntities = contexts.game.GetGroup(GameMatcher.SavingData).GetEntities();
@@ -53,6 +59,10 @@ public class EntitySaveLoader
         Debug.Log("LoadEntitiesFromSaveFile done!");
     }
     
+
+    /// <summary>
+    /// find templete or templeteGroup, make entity.
+    /// </summary>
     public static IEntity MakeEntityFromTempleteName(string templeteName, Contexts _contexts)
     {
         //razy init
@@ -61,13 +71,24 @@ public class EntitySaveLoader
             ReloadTempletesFromResource();
         }
 
-        if (!_templetDictionary.ContainsKey(templeteName))
+        if (!_groupDictionaryReady)
         {
-            Debug.Log($"error : can't find templeteName {templeteName}.");
-            return null;
+            ReloadTempleteGroupFromResource();
         }
 
-        return MakeEntityFromJson(_templetDictionary[templeteName], _contexts);
+        if (_templetDictionary.ContainsKey(templeteName))
+        {
+            return MakeEntityFromJson(_templetDictionary[templeteName], _contexts);
+        }
+
+        if (_Templetes.ContainsKey(templeteName))
+        {
+            return MakeEntityFromEntityInfo(_Templetes[templeteName], _contexts);
+        }
+
+        Debug.Log($"can't find name templet: {templeteName}");
+        return null;
+
     }
     
     public static IEntity MakeEntityFromJson(string json, Contexts contexts)
@@ -85,44 +106,8 @@ public class EntitySaveLoader
     private static IEntity MakeEntityFromEntityInfo(EntityTemplete entityTemplete, Contexts contexts)
     {
         IEntity newEntity = MakeEntityByContext(entityTemplete, contexts);
-
-        if (! string.IsNullOrEmpty(entityTemplete.Tags))
-        {
-            System.Diagnostics.Debug.WriteLine($"tag : {entityTemplete.Tags}");
-            var parsedTags = entityTemplete.Tags.Split(',');
-            //add tag components
-            foreach (var tagName in parsedTags)
-            {
-                if (tagName == "")
-                {
-                    continue;
-                }
-
-                var componentLookUpName = RemoveComponentSubfix(tagName);
-                int componentLookUpIndex = (int)typeof(GameComponentsLookup).GetField(componentLookUpName).GetValue(null);
-                var componentType = GameComponentsLookup.componentTypes[componentLookUpIndex];
-                var tagComponent = Activator.CreateInstance(componentType);
-
-                //Debug.Log($"componentLookUpIndex : {componentLookUpIndex}");
-
-                ((Entity)newEntity).AddComponent(componentLookUpIndex, tagComponent as IComponent);
-            }
-        }
-        
-        //add components
-        //deserialized componentValue is JObject. Jobject can be casted with dynamic (ToObject)
-        foreach (KeyValuePair<string, dynamic> componentInfo in entityTemplete.Components)
-        {
-            var componentLookUpName = RemoveComponentSubfix(componentInfo.Key);
-            int componentLookUpIndex = (int)typeof(GameComponentsLookup).GetField(componentLookUpName).GetValue(null);
-            var componentType = GameComponentsLookup.componentTypes[componentLookUpIndex];
-            var component = componentInfo.Value.ToObject(componentType);
-
-            //Debug.Log($"componentLookUpIndex : {componentLookUpIndex}");
-
-            ((Entity)newEntity).AddComponent(componentLookUpIndex, component as IComponent);
-        }
-        
+        AddTagComponents(entityTemplete, newEntity);
+        AddComponents(entityTemplete, newEntity);
         return newEntity;
     }
 
@@ -200,6 +185,30 @@ public class EntitySaveLoader
         _dictionaryReady = true;
     }
 
+    public static void ReloadTempleteGroupFromResource()
+    {
+        var templetAssets = Resources.LoadAll<TextAsset>("EntityTemplete/Group");
+
+        Debug.Log($"templetAssets.count : {templetAssets.Length}");
+
+        foreach (var textAsset in templetAssets)
+        {
+            Debug.Log($"textAsset.text : {textAsset.text}");
+
+            var jObject = JObject.Parse(textAsset.text);
+
+            foreach (var jPair in jObject)
+            {
+                var newTemplete = jPair.Value.ToObject<EntityTemplete>();
+                Debug.Log(newTemplete.ToString());
+                _Templetes.Add(jPair.Key, newTemplete);
+            }
+        }
+
+        Debug.Log($"templetes : {_Templetes.Count}");
+        _groupDictionaryReady = true;
+    }
+
     /// <summary>
     ///     make Json file and save to Resource/EntityTemplete.
     /// </summary>
@@ -249,6 +258,62 @@ public class EntitySaveLoader
         return newEntity;
     }
 
+
+    private static void AddComponents(EntityTemplete entityTemplete, IEntity newEntity)
+    {
+        //add components
+        //deserialized componentValue is JObject. Jobject can be casted with dynamic (ToObject)
+        foreach (KeyValuePair<string, dynamic> componentInfo in entityTemplete.Components)
+        {
+            var componentLookUpName = RemoveComponentSubfix(componentInfo.Key);
+
+            if (!GameComponentsLookup.componentNames.Contains(componentLookUpName))
+            {
+                throw new Exception($"{componentLookUpName} is not in GameComponentsLookup");
+            }
+
+            int componentLookUpIndex = (int)typeof(GameComponentsLookup).GetField(componentLookUpName).GetValue(null);
+            var componentType = GameComponentsLookup.componentTypes[componentLookUpIndex];
+            var component = componentInfo.Value.ToObject(componentType);
+
+            //Debug.Log($"componentLookUpIndex : {componentLookUpIndex}");
+
+            ((Entity)newEntity).AddComponent(componentLookUpIndex, component as IComponent);
+        }
+    }
+
+    private static void AddTagComponents(EntityTemplete entityTemplete, IEntity newEntity)
+    {
+        if (!string.IsNullOrEmpty(entityTemplete.Tags))
+        {
+            //System.Diagnostics.Debug.WriteLine($"tag : {entityTemplete.Tags}");
+            var parsedTags = entityTemplete.Tags.Split(',');
+            //add tag components
+            foreach (var tagName in parsedTags)
+            {
+                if (string.IsNullOrEmpty(tagName))
+                {
+                    continue;
+                }
+                var componentLookUpName = RemoveComponentSubfix(tagName);
+
+                if (!GameComponentsLookup.componentNames.Contains(componentLookUpName))
+                {
+                    throw new Exception("{componentLookUpName} is not in GameComponentsLookup");
+                }
+
+                int componentLookUpIndex = (int) typeof(GameComponentsLookup).GetField(componentLookUpName).GetValue(null);
+                var componentType = GameComponentsLookup.componentTypes[componentLookUpIndex];
+                var tagComponent = Activator.CreateInstance(componentType);
+
+                //Debug.Log($"componentLookUpIndex : {componentLookUpIndex}");
+
+                ((Entity)newEntity).AddComponent(componentLookUpIndex, tagComponent as IComponent);
+            }
+        }
+    }
+
+
     #endregion
 
 
@@ -258,13 +323,20 @@ public class EntitySaveLoader
         public string Context;
         public string Tags;
         public Dictionary<string, object> Components = new Dictionary<string, object>();
+
+        public override string ToString()
+        {
+            string str = $"Name : {Name}, "
+                         + $"Context : {Context}, "
+                         + $"Tags : {Tags}, "
+                ;
+            return str;
+
+        }
     }
 
     public class EntitiesSaveData
     {
         public List<EntityTemplete> EntityInfos = new List<EntityTemplete>();
     }
-    
-    
-    
 }

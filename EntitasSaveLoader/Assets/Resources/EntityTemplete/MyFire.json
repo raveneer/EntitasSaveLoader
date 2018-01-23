@@ -1,9 +1,7 @@
 {
   "Name": "MyFire",
   "Context": "Game",
-  "Tags": [
-    "SomeTag"
-  ],
+  "Tags": "SomeTag,",
   "Components": {
     "Fire": {
       "Strength": 1.0

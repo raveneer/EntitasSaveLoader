@@ -85,6 +85,13 @@ public class EntityTempleteSaveLoadWindow : EditorWindow
         }
 
 
+        //load templete groups- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        if (GUILayout.Button("Load Templete Groups"))
+        {
+            EntitySaveLoader.ReloadTempleteGroupFromResource();
+        }
+
+        //reset- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         GUILayout.Label("Reset", EditorStyles.boldLabel);
 
         if (GUILayout.Button("Clear"))

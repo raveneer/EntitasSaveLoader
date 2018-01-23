@@ -1,0 +1,44 @@
+{
+  "MyFire": {
+    "Name": "MyFire",
+    "Context": "Game",
+    "Tags": "SomeTag,SavingData",
+    "Components": {
+      "Fire": {
+        "Strength": 0
+      },
+      "Position2D": {
+        "X": 0,
+        "Y": 0
+      }
+    }
+  },
+  "MyFire2": {
+    "Name": "MyFire2",
+    "Context": "Game",
+    "Tags": "SomeTag,SavingData",
+    "Components": {
+      "Position2D": {
+        "X": 0,
+        "Y": 0
+      },
+      "Fire": {
+        "Strength": 0
+      }
+    }
+  },
+  "MyFire3": {
+    "Name": "MyFire3",
+    "Context": "Game",
+    "Tags": "SomeTag,SavingData",
+    "Components": {
+      "Position2D": {
+        "X": 0,
+        "Y": 0
+      },
+      "Fire": {
+        "Strength": 0
+      }
+    }
+  }
+}
