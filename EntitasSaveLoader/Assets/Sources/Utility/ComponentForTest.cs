@@ -58,6 +58,11 @@ public class SomeComponentHaveIgnoreSaveAttribute : IComponent
 
 }
 
+[Game]
+public class SomeTagComponent : IComponent
+{
+}
+
 public class Coord
 {
     public int X;
