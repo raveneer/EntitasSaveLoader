@@ -63,10 +63,10 @@ internal class Test_SaveLoader
   ""Name"": ""newTemplete"",
   ""Context"": ""Game"",
   ""Components"": {
-    ""SomeIntComponent"": {
+    ""SomeInt"": {
       ""Value"": 10
     },
-    ""SomeFloatComponent"": {
+    ""SomeFloat"": {
       ""Value"": 2.0
     }
   }
@@ -88,7 +88,7 @@ internal class Test_SaveLoader
 
         //assert
         var expected =
-            @"{""Name"":null,""Context"":""Input"",""Components"":{""SomeBoolComponent"":{""Value"":true}}}";
+            @"{""Name"":null,""Context"":""Input"",""Components"":{""SomeBool"":{""Value"":true}}}";
         Assert.AreEqual(expected, resultJson);
     }
 
@@ -133,7 +133,7 @@ internal class Test_SaveLoader
         Debug.WriteLine(resultJson);
         //assert
         var expected =
-            @"{""Name"":null,""Context"":""Game"",""Components"":{""SomeFloatComponent"":{""Value"":10.0}}}";
+            @"{""Name"":null,""Context"":""Game"",""Components"":{""SomeFloat"":{""Value"":10.0}}}";
         Assert.AreEqual(expected, resultJson);
     }
 

@@ -90,9 +90,10 @@ public class EntitySaveLoader
         //deserialized componentValue is JObject. Jobject can be casted with dynamic (ToObject)
         foreach (KeyValuePair<string, dynamic> componentInfo in entityTemplete.Components)
         {
-            var component = componentInfo.Value.ToObject(Type.GetType(componentInfo.Key));
-            var componentLookUpName = EntitySaveLoader.RemoveComponentSubfix(componentInfo.Key);
+            var componentLookUpName = RemoveComponentSubfix(componentInfo.Key);
             int componentLookUpIndex = (int)typeof(GameComponentsLookup).GetField(componentLookUpName).GetValue(null);
+            var componentType = GameComponentsLookup.componentTypes[componentLookUpIndex];
+            var component = componentInfo.Value.ToObject(componentType);
 
             //Debug.Log($"componentLookUpIndex : {componentLookUpIndex}");
 
@@ -148,7 +149,8 @@ public class EntitySaveLoader
         {
             if (!IsHaveIgnoreSaveAttibute(component))
             {
-                entityInfo.Components.Add(component.GetType().ToString(), component);
+                string componentName = EntitySaveLoader.RemoveComponentSubfix(component.GetType().ToString());
+                entityInfo.Components.Add(componentName, component);
             }
         }
         

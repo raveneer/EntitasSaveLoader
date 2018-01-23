@@ -1,0 +1,19 @@
+{
+  "Name": "newTemplet",
+  "Context": "Game",
+  "Components": {
+    "Fire": {
+      "Strength": 2222.0
+    },
+    "Health": {
+      "Value": 222.0
+    },
+    "Name": {
+      "Value": "22"
+    },
+    "Position2D": {
+      "X": 2.0,
+      "Y": 22.0
+    }
+  }
+}
