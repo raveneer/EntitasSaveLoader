@@ -1,4 +1,4 @@
-# EntitasSaveLoader v0.5
+# EntitasSaveLoader v0.6
 can save/load entity info with Json file.
 
 https://www.youtube.com/watch?v=TzMSpb3g7_A&feature=youtu.be
@@ -6,6 +6,35 @@ https://www.youtube.com/watch?v=TzMSpb3g7_A&feature=youtu.be
 https://github.com/sschmid/Entitas-CSharp
 
 this is still experimental.
+
+## version v0.6
+support templete name.
+
+component subfix removes.
+
+tag type components now added to Tags array.
+```
+{
+  "Name": "MyFire",
+  "Context": "Game",
+  "Tags": [
+    "SomeTag"
+  ],
+  "Components": {
+    "Fire": {
+      "Strength": 1.0
+    },
+    "Name": {
+      "Value": "ddd"
+    },
+    "Position2D": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  }
+}
+```
+
 
 ## version v0.5
 entity templete file is now clean Json format.
