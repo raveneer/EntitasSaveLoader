@@ -4,8 +4,8 @@ using UnityEngine;
 using UnityEditor;
 
 
-public class EntityTemplete : ScriptableObject
+public class EntityTemplate : ScriptableObject
 {
-    public string TempleteName;
+    public string templateName;
     public string Json;
 }

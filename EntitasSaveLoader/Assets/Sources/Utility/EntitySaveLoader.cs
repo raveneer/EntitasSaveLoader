@@ -11,38 +11,30 @@ using NUnit.Framework;
 
 public class EntitySaveLoader
 {
-    private static readonly Dictionary<string, string> _templetDictionary = new Dictionary<string, string>();
+    private readonly Dictionary<string, EntityTemplate> _tempeletDic = new Dictionary<string, EntityTemplate>();
 
-    private static readonly Dictionary<string, EntityTemplete> _Templetes = new Dictionary<string, EntityTemplete>();
+    private bool _dictionaryReady;
 
-    private static bool _dictionaryReady;
-    private static bool _groupDictionaryReady;
-
-    public static void SaveAllEntitiesInScene(Contexts contexts, string saveFileName)
+    public void SaveAllEntitiesInScene(Contexts contexts, string saveFileName)
     {
         var savingEntities = contexts.game.GetGroup(GameMatcher.SavingData).GetEntities();
         var saveData = new EntitiesSaveData();
         foreach (var savingEntity in savingEntities)
         {
-            //todo : saveAll 에서는 템플릿 이름을 지어줄 수가 없다...
+            //todo : how to save template name here? or not needed?
             saveData.EntityInfos.Add(MakeEntityInfo(savingEntity, null));
         }
 
         var json = JsonConvert.SerializeObject(saveData, Formatting.Indented);
-        var path = $"Assets/Resources/EntityTemplete/{saveFileName}.json";
-
-        if (!File.Exists(path))
-        {
-            File.Create(path).Close();
-        }
-
+        var path = $"Assets/Resources/EntityTemplate/SaveFile/{saveFileName}.json";
+        
         File.WriteAllText(path, json);
         Debug.Log("SaveEntitiesInScene done!");
     }
 
-    public static void LoadEntitiesFromSaveFile(Contexts contexts, string saveFileName)
+    public void LoadEntitiesFromSaveFile(Contexts contexts, string saveFileName)
     {
-        var saveFileAsset = Resources.Load<TextAsset>($"EntityTemplete/{saveFileName}");
+        var saveFileAsset = Resources.Load<TextAsset>($"EntityTemplate/SaveFile/{saveFileName}");
 
         if (saveFileAsset.text == null)
         {
@@ -60,58 +52,52 @@ public class EntitySaveLoader
     }
     
 
-    /// <summary>
-    /// find templete or templeteGroup, make entity.
-    /// </summary>
-    public static IEntity MakeEntityFromTempleteName(string templeteName, Contexts _contexts)
+    public IEntity MakeEntityFromtemplate(string templateName, Contexts _contexts)
     {
-        //razy init
         if (!_dictionaryReady)
         {
-            ReloadTempletesFromResource();
+            ReLoadTemplets();
         }
 
-        if (!_groupDictionaryReady)
+        if (!_tempeletDic.ContainsKey(templateName))
         {
-            ReloadTempleteGroupFromResource();
+            Debug.Log($"can't find name templet: {templateName}");
+            return null;
         }
 
-        if (_templetDictionary.ContainsKey(templeteName))
-        {
-            return MakeEntityFromJson(_templetDictionary[templeteName], _contexts);
-        }
-
-        if (_Templetes.ContainsKey(templeteName))
-        {
-            return MakeEntityFromEntityInfo(_Templetes[templeteName], _contexts);
-        }
-
-        Debug.Log($"can't find name templet: {templeteName}");
-        return null;
-
+        return MakeEntityFromEntityInfo(_tempeletDic[templateName], _contexts);
     }
-    
-    public static IEntity MakeEntityFromJson(string json, Contexts contexts)
+
+    public void ReLoadTemplets()
+    {
+        _tempeletDic.Clear();
+        LoadSingletemplates();
+        LoadtemplateGroups();
+        _dictionaryReady = true;
+        Debug.Log($"ReLoadTemplets done.");
+    }
+
+    public IEntity MakeEntityFromJson(string json, Contexts contexts)
     {
         if (string.IsNullOrWhiteSpace(json))
         {
             Debug.Log("empty json!");
         }
 
-        var entityInfo = JsonConvert.DeserializeObject<EntityTemplete>(json);
+        var entityInfo = JsonConvert.DeserializeObject<EntityTemplate>(json);
         return MakeEntityFromEntityInfo(entityInfo, contexts);
     }
 
     //todo : support input, ui etc... components
-    private static IEntity MakeEntityFromEntityInfo(EntityTemplete entityTemplete, Contexts contexts)
+    private IEntity MakeEntityFromEntityInfo(EntityTemplate EntityTemplate, Contexts contexts)
     {
-        IEntity newEntity = MakeEntityByContext(entityTemplete, contexts);
-        AddTagComponents(entityTemplete, newEntity);
-        AddComponents(entityTemplete, newEntity);
+        IEntity newEntity = MakeEntityByContext(EntityTemplate, contexts);
+        AddTagComponents(EntityTemplate, newEntity);
+        AddComponents(EntityTemplate, newEntity);
         return newEntity;
     }
 
-    public static string RemoveComponentSubfix(string nameOfComponent)
+    public string RemoveComponentSubfix(string nameOfComponent)
     {
         if (nameOfComponent.EndsWith("Component"))
         {
@@ -121,7 +107,7 @@ public class EntitySaveLoader
         return nameOfComponent;
     }
 
-    public static bool IsFlagComponent(IComponent component)
+    public bool IsFlagComponent(IComponent component)
     {
         return component.GetType().GetFields().Length == 0;
     }
@@ -130,19 +116,19 @@ public class EntitySaveLoader
     /// only value or string field have components serialized.
     /// ref type componets ignored.
     /// </summary>
-    public static string MakeEntityInfoJson(IEntity entity, Formatting jsonFormatting, string templeteName)
+    public string MakeEntityInfoJson(IEntity entity, Formatting jsonFormatting, string templateName)
     {
-        EntityTemplete entityTemplete = MakeEntityInfo(entity, templeteName);
-        var jsonStr = JsonConvert.SerializeObject(entityTemplete, jsonFormatting);
+        EntityTemplate EntityTemplate = MakeEntityInfo(entity, templateName);
+        var jsonStr = JsonConvert.SerializeObject(EntityTemplate, jsonFormatting);
 
         return jsonStr;
     }
     
-    public static EntityTemplete MakeEntityInfo(IEntity entity, string templeteName)
+    public EntityTemplate MakeEntityInfo(IEntity entity, string templateName)
     {
-        var entityInfo = new EntityTemplete
+        var entityInfo = new EntityTemplate
         {
-            Name = templeteName,
+            Name = templateName,
             Context = entity.contextInfo.name
         };
 
@@ -150,7 +136,7 @@ public class EntitySaveLoader
         {
             if (!IsHaveIgnoreSaveAttibute(component))
             {
-                string componentName = EntitySaveLoader.RemoveComponentSubfix(component.GetType().ToString());
+                string componentName = RemoveComponentSubfix(component.GetType().ToString());
 
                 if (IsFlagComponent(component))
                 {
@@ -166,56 +152,56 @@ public class EntitySaveLoader
         return entityInfo;
     }
 
-    public static void ReloadTempletesFromResource()
+    private void LoadSingletemplates()
     {
-        var templetAssets = Resources.LoadAll<TextAsset>("EntityTemplete");
+        var templetAssets = Resources.LoadAll<TextAsset>("EntityTemplate/SingleEntity");
         foreach (var textAsset in templetAssets)
         {
-            var key = textAsset.name;
-            var value = textAsset.text;
-            if (_templetDictionary.ContainsKey(key))
+            var json = textAsset.text;
+            var newtemplate = JsonConvert.DeserializeObject<EntityTemplate>(json);
+            Debug.Log(newtemplate.ToString());
+
+            if (_tempeletDic.ContainsKey(newtemplate.Name))
             {
-                _templetDictionary[key] = value;
+                throw new Exception();
             }
-            else
-            {
-                _templetDictionary.Add(key, value);
-            }
+
+            _tempeletDic.Add(newtemplate.Name, newtemplate);
         }
-        _dictionaryReady = true;
     }
 
-    public static void ReloadTempleteGroupFromResource()
+    private void LoadtemplateGroups()
     {
-        var templetAssets = Resources.LoadAll<TextAsset>("EntityTemplete/Group");
-
-        Debug.Log($"templetAssets.count : {templetAssets.Length}");
+        var templetAssets = Resources.LoadAll<TextAsset>("EntityTemplate/GroupEntity");
 
         foreach (var textAsset in templetAssets)
         {
-            Debug.Log($"textAsset.text : {textAsset.text}");
-
             var jObject = JObject.Parse(textAsset.text);
 
             foreach (var jPair in jObject)
             {
-                var newTemplete = jPair.Value.ToObject<EntityTemplete>();
-                Debug.Log(newTemplete.ToString());
-                _Templetes.Add(jPair.Key, newTemplete);
+                var newtemplate = jPair.Value.ToObject<EntityTemplate>();
+                Debug.Log(newtemplate.ToString());
+
+                if (_tempeletDic.ContainsKey(jPair.Key))
+                {
+                    throw new Exception($"already have key {jPair.Key}");
+                }
+
+                _tempeletDic.Add(jPair.Key, newtemplate);
             }
         }
 
-        Debug.Log($"templetes : {_Templetes.Count}");
-        _groupDictionaryReady = true;
+        Debug.Log($"templates : {_tempeletDic.Count}");
     }
 
     /// <summary>
-    ///     make Json file and save to Resource/EntityTemplete.
+    ///     make Json file and save to Resource/EntityTemplate.
     /// </summary>
-    public static void GenerateEntityTemplete(IEntity entity, string tmepleteName)
+    public void GenerateEntityTemplate(IEntity entity, string templteName)
     {
-        var json = MakeEntityInfoJson(entity, Formatting.Indented, tmepleteName);
-        var path = $"Assets/Resources/EntityTemplete/{tmepleteName}.json";
+        var json = MakeEntityInfoJson(entity, Formatting.Indented, templteName);
+        var path = $"Assets/Resources/EntityTemplate/SingleEntity/{templteName}.json";
 
         if (!File.Exists(path))
         {
@@ -227,7 +213,7 @@ public class EntitySaveLoader
 
     #region private - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    private static bool IsHaveIgnoreSaveAttibute(object obj)
+    private bool IsHaveIgnoreSaveAttibute(object obj)
     {
         var t = obj.GetType();
         return Attribute.IsDefined(t, typeof(IgnoreSaveAttribute));
@@ -236,11 +222,11 @@ public class EntitySaveLoader
     /// <summary>
     /// only make new Entity. not add components
     /// </summary>
-    private static IEntity MakeEntityByContext(EntityTemplete entityTemplete, Contexts contexts)
+    private IEntity MakeEntityByContext(EntityTemplate EntityTemplate, Contexts contexts)
     {
-        System.Diagnostics.Debug.WriteLine($"entityInfo.ContextType : {entityTemplete.Context}");
+        System.Diagnostics.Debug.WriteLine($"entityInfo.ContextType : {EntityTemplate.Context}");
         IEntity newEntity = null;
-        switch (entityTemplete.Context)
+        switch (EntityTemplate.Context)
         {
             case "Game":
                 newEntity = contexts.game.CreateEntity();
@@ -252,18 +238,18 @@ public class EntitySaveLoader
                 newEntity = contexts.ui.CreateEntity();
             break;*/
             default:
-                throw new Exception($" {entityTemplete.Context} is not support type. if you have atribute, add it EntitySaveLoaderMakeEntityByContext() ");
+                throw new Exception($" {EntityTemplate.Context} is not support type. if you have atribute, add it EntitySaveLoaderMakeEntityByContext() ");
         }
 
         return newEntity;
     }
 
 
-    private static void AddComponents(EntityTemplete entityTemplete, IEntity newEntity)
+    private void AddComponents(EntityTemplate EntityTemplate, IEntity newEntity)
     {
         //add components
         //deserialized componentValue is JObject. Jobject can be casted with dynamic (ToObject)
-        foreach (KeyValuePair<string, dynamic> componentInfo in entityTemplete.Components)
+        foreach (KeyValuePair<string, dynamic> componentInfo in EntityTemplate.Components)
         {
             var componentLookUpName = RemoveComponentSubfix(componentInfo.Key);
 
@@ -282,12 +268,12 @@ public class EntitySaveLoader
         }
     }
 
-    private static void AddTagComponents(EntityTemplete entityTemplete, IEntity newEntity)
+    private void AddTagComponents(EntityTemplate EntityTemplate, IEntity newEntity)
     {
-        if (!string.IsNullOrEmpty(entityTemplete.Tags))
+        if (!string.IsNullOrEmpty(EntityTemplate.Tags))
         {
-            //System.Diagnostics.Debug.WriteLine($"tag : {entityTemplete.Tags}");
-            var parsedTags = entityTemplete.Tags.Split(',');
+            //System.Diagnostics.Debug.WriteLine($"tag : {EntityTemplate.Tags}");
+            var parsedTags = EntityTemplate.Tags.Split(',');
             //add tag components
             foreach (var tagName in parsedTags)
             {
@@ -317,7 +303,7 @@ public class EntitySaveLoader
     #endregion
 
 
-    public class EntityTemplete
+    public class EntityTemplate
     {
         public string Name;
         public string Context;
@@ -337,6 +323,6 @@ public class EntitySaveLoader
 
     public class EntitiesSaveData
     {
-        public List<EntityTemplete> EntityInfos = new List<EntityTemplete>();
+        public List<EntityTemplate> EntityInfos = new List<EntityTemplate>();
     }
 }

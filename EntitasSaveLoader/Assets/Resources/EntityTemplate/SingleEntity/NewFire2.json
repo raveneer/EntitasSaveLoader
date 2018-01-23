@@ -1,13 +1,13 @@
 {
-  "Name": "MyFire",
+  "Name": "NewFire2",
   "Context": "Game",
-  "Tags": "SomeTag,",
+  "Tags": "SavingData,SomeTag,",
   "Components": {
     "Fire": {
-      "Strength": 1.0
+      "Strength": 5.0
     },
     "Name": {
-      "Value": "ddd"
+      "Value": "MyFire5"
     },
     "Position2D": {
       "X": 0.0,
