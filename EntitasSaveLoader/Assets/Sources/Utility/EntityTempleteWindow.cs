@@ -12,7 +12,7 @@ public class EntityTemplateSaveLoadWindow : EditorWindow
     private string _saveFileName = "";
     private string _loadFileName = "";
     private EntitySaveLoader _entitySaveLoader;
-    private IEntity _entity;
+    private IEntity _currentEntity;
 
     [MenuItem("Tools/Entity template Save Loader")]
     public static void ShowWindow()
@@ -32,24 +32,22 @@ public class EntityTemplateSaveLoadWindow : EditorWindow
         //선택한것이 엔티티 게임오브젝트 일 때만.
         if (Selection.activeGameObject && Selection.activeGameObject.GetComponent<EntityBehaviour>())
         {
-            _entity = Selection.activeGameObject.GetComponent<EntityBehaviour>().entity;
-            _selectedEntity = _entity.ToString();
+            _currentEntity = Selection.activeGameObject.GetComponent<EntityBehaviour>().entity;
+            _selectedEntity = _currentEntity.ToString();
         }
 
         #region save - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-        GUILayout.Label("Save Entity To single asset", EditorStyles.boldLabel);
+        GUILayout.Label("Save Entity To template asset", EditorStyles.boldLabel);
 
         //can save to json file
         _assetNameForSave = EditorGUILayout.TextField("Name of template to save:", _assetNameForSave);
 
-        if (GUILayout.Button("Save entity!"))
+        if (GUILayout.Button("Save to template!"))
         {
-            if (_entity != null)
+            if (_currentEntity != null)
             {
-                var asset = CreateInstance<EntityTemplate>();
-                asset.templateName = _assetNameForSave;
-                _entitySaveLoader.GenerateEntityTemplate(_entity, _assetNameForSave);
+                _entitySaveLoader.SaveEntityTemplateToSingleFile(_currentEntity, _assetNameForSave);
                 AssetDatabase.Refresh();
                 _entitySaveLoader.ReLoadTemplets();
                 Debug.Log($"{_assetNameForSave} Entity template file created!");
@@ -60,9 +58,9 @@ public class EntityTemplateSaveLoadWindow : EditorWindow
 
         #region load - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-        GUILayout.Label("Make new Entity from text asset", EditorStyles.boldLabel);
+        GUILayout.Label("Make new Entity from template", EditorStyles.boldLabel);
 
-        _assetNameForLoad = EditorGUILayout.TextField("Name of template to save:", _assetNameForLoad);
+        _assetNameForLoad = EditorGUILayout.TextField("Name of template:", _assetNameForLoad);
 
         if (GUILayout.Button("Make new entity!"))
         {
@@ -85,16 +83,7 @@ public class EntityTemplateSaveLoadWindow : EditorWindow
         {
             _entitySaveLoader.LoadEntitiesFromSaveFile(Contexts.sharedInstance, _loadFileName);
         }
-
-        //reset- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        GUILayout.Label("Reset", EditorStyles.boldLabel);
-
-        if (GUILayout.Button("Clear"))
-        {
-            _assetNameForSave = "";
-            _assetNameForLoad = "";
-            _selectedEntity = "";
-        }
+        
     }
 
     private void CheckInit()

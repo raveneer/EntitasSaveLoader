@@ -168,15 +168,15 @@ internal class Test_SaveLoader
         var EntitySaveLoader = new EntitySaveLoader(null);
         var contexts = new Contexts();
         var entity = contexts.game.CreateEntity();
-        var t1 = new SomeRefTypeComponent() { CoordRef = new Coord(){X = 10, Y = 20} };
+        var t1 = new SomeRefTypeComponent() { PositionRef = new Position(){X = 10, Y = 20} };
         entity.AddComponent(0, t1);
 
         var resultJson = EntitySaveLoader.MakeEntityInfoJson(entity, Formatting.Indented, null);
         Debug.WriteLine(resultJson);
 
         var newEntity = EntitySaveLoader.MakeEntityFromJson(resultJson, contexts) as GameEntity;
-        Assert.AreEqual(10, newEntity.someRefType.CoordRef.X);
-        Assert.AreEqual(20, newEntity.someRefType.CoordRef.Y);
+        Assert.AreEqual(10, newEntity.someRefType.PositionRef.X);
+        Assert.AreEqual(20, newEntity.someRefType.PositionRef.Y);
 
     }
 

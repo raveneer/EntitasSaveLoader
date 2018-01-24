@@ -7,7 +7,7 @@ using Entitas;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-public class EntitySaveLoader
+public partial class EntitySaveLoader
 {
     private readonly Dictionary<string, EntityTemplate> _tempeletDic = new Dictionary<string, EntityTemplate>();
 
@@ -196,10 +196,10 @@ public class EntitySaveLoader
     /// <summary>
     ///     make Json file and save to Resource/EntityTemplate.
     /// </summary>
-    public void GenerateEntityTemplate(IEntity entity, string templteName)
+    public void SaveEntityTemplateToSingleFile(IEntity entity, string templateName)
     {
-        var json = MakeEntityInfoJson(entity, Formatting.Indented, templteName);
-        var path = $"Assets/Resources/EntityTemplate/SingleEntity/{templteName}.json";
+        var json = MakeEntityInfoJson(entity, Formatting.Indented, templateName);
+        var path = $"Assets/Resources/EntityTemplate/SingleEntity/{templateName}.json";
 
         if (!File.Exists(path))
         {
@@ -297,30 +297,6 @@ public class EntitySaveLoader
         }
     }
 
+#endregion
 
-    #endregion
-
-
-    public class EntityTemplate
-    {
-        public string Name;
-        public string Context;
-        public string Tags;
-        public Dictionary<string, object> Components = new Dictionary<string, object>();
-
-        public override string ToString()
-        {
-            string str = $"Name : {Name}, "
-                         + $"Context : {Context}, "
-                         + $"Tags : {Tags}, "
-                ;
-            return str;
-
-        }
-    }
-
-    public class EntitiesSaveData
-    {
-        public List<EntityTemplate> EntityInfos = new List<EntityTemplate>();
-    }
 }

@@ -12,7 +12,6 @@ public interface ITemplateLoader
     Tuple<string, string> LoadSavedEntityFile(string saveFileName);
 }
 
-
 /// <summary>
 /// load json text assets
 /// </summary>

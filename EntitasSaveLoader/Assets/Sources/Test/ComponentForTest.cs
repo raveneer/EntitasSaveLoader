@@ -36,7 +36,7 @@ public class SomeEnumComponent : IComponent
 [Game]
 public class SomeRefTypeComponent : IComponent
 {
-    public Coord CoordRef;
+    public Position PositionRef;
 }
 
 [Game]
@@ -63,7 +63,7 @@ public class SomeTagComponent : IComponent
 {
 }
 
-public class Coord
+public class Position
 {
     public int X;
     public int Y;
