@@ -1,0 +1,3 @@
+
+This version of moq was obtained from moq nuget package version v4.7.99
+

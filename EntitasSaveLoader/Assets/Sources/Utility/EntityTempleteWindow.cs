@@ -101,7 +101,7 @@ public class EntityTemplateSaveLoadWindow : EditorWindow
     {
         if (_entitySaveLoader == null)
         {
-            _entitySaveLoader = new EntitySaveLoader();
+            _entitySaveLoader = new EntitySaveLoader(new TemplateLoader());
             _entitySaveLoader.ReLoadTemplets();
         }
     }

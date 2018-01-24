@@ -1,17 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Entitas;
 using Newtonsoft.Json;
-using UnityEngine;
-using System.Reflection;
 using Newtonsoft.Json.Linq;
-using NUnit.Framework;
 
 public class EntitySaveLoader
 {
     private readonly Dictionary<string, EntityTemplate> _tempeletDic = new Dictionary<string, EntityTemplate>();
+
+    private ITemplateLoader _templateLoader;
+    
+    public EntitySaveLoader(ITemplateLoader templateLoader1)
+    {
+        _templateLoader = templateLoader1;
+    }
 
     private bool _dictionaryReady;
 
@@ -29,29 +34,22 @@ public class EntitySaveLoader
         var path = $"Assets/Resources/EntityTemplate/SaveFile/{saveFileName}.json";
         
         File.WriteAllText(path, json);
-        Debug.Log("SaveEntitiesInScene done!");
+        Debug.WriteLine("SaveEntitiesInScene done!");
     }
 
     public void LoadEntitiesFromSaveFile(Contexts contexts, string saveFileName)
     {
-        var saveFileAsset = Resources.Load<TextAsset>($"EntityTemplate/SaveFile/{saveFileName}");
-
-        if (saveFileAsset.text == null)
-        {
-            Debug.Log($"no save file : {saveFileName}");
-            return;
-        }
-
-        var saveData = JsonConvert.DeserializeObject<EntitiesSaveData>(saveFileAsset.text);
+        var savedTuple = _templateLoader.LoadSavedEntityFile(saveFileName);
+        
+        var saveData = JsonConvert.DeserializeObject<EntitiesSaveData>(savedTuple.Item2);
         foreach (var entityInfo in saveData.EntityInfos)
         {
             MakeEntityFromEntityInfo(entityInfo, contexts);
         }
 
-        Debug.Log("LoadEntitiesFromSaveFile done!");
+        Debug.WriteLine("LoadEntitiesFromSaveFile done!");
     }
     
-
     public IEntity MakeEntityFromtemplate(string templateName, Contexts _contexts)
     {
         if (!_dictionaryReady)
@@ -61,7 +59,7 @@ public class EntitySaveLoader
 
         if (!_tempeletDic.ContainsKey(templateName))
         {
-            Debug.Log($"can't find name templet: {templateName}");
+            Debug.WriteLine($"can't find name templet: {templateName}");
             return null;
         }
 
@@ -74,14 +72,14 @@ public class EntitySaveLoader
         LoadSingletemplates();
         LoadtemplateGroups();
         _dictionaryReady = true;
-        Debug.Log($"ReLoadTemplets done.");
+        Debug.WriteLine($"ReLoadTemplets done.");
     }
 
     public IEntity MakeEntityFromJson(string json, Contexts contexts)
     {
         if (string.IsNullOrWhiteSpace(json))
         {
-            Debug.Log("empty json!");
+            Debug.WriteLine("empty json!");
         }
 
         var entityInfo = JsonConvert.DeserializeObject<EntityTemplate>(json);
@@ -154,12 +152,12 @@ public class EntitySaveLoader
 
     private void LoadSingletemplates()
     {
-        var templetAssets = Resources.LoadAll<TextAsset>("EntityTemplate/SingleEntity");
-        foreach (var textAsset in templetAssets)
+        var tuples = _templateLoader.LoadSingleTemplateFile();
+        foreach (var tuple in tuples)
         {
-            var json = textAsset.text;
+            var json = tuple.Item2;
             var newtemplate = JsonConvert.DeserializeObject<EntityTemplate>(json);
-            Debug.Log(newtemplate.ToString());
+            Debug.WriteLine(newtemplate.ToString());
 
             if (_tempeletDic.ContainsKey(newtemplate.Name))
             {
@@ -172,16 +170,16 @@ public class EntitySaveLoader
 
     private void LoadtemplateGroups()
     {
-        var templetAssets = Resources.LoadAll<TextAsset>("EntityTemplate/GroupEntity");
+        var tuples = _templateLoader.LoadGroupTemplateFiles();
 
-        foreach (var textAsset in templetAssets)
+        foreach (var tuple in tuples)
         {
-            var jObject = JObject.Parse(textAsset.text);
+            var jObject = JObject.Parse(tuple.Item2);
 
             foreach (var jPair in jObject)
             {
                 var newtemplate = jPair.Value.ToObject<EntityTemplate>();
-                Debug.Log(newtemplate.ToString());
+                Debug.WriteLine(newtemplate.ToString());
 
                 if (_tempeletDic.ContainsKey(jPair.Key))
                 {
@@ -192,7 +190,7 @@ public class EntitySaveLoader
             }
         }
 
-        Debug.Log($"templates : {_tempeletDic.Count}");
+        Debug.WriteLine($"templates : {_tempeletDic.Count}");
     }
 
     /// <summary>
