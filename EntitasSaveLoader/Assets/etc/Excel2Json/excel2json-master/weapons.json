@@ -1,0 +1,44 @@
+{
+  "10001" : {
+    "attack_damage" : 100,
+    "attach_speed" : 0.5,
+    "visual_props" : {
+      "motion_id" : 1,
+      "color" : {
+        "red" : 255,
+        "green" : 0,
+        "blue" : 0
+      }
+    },
+    "additional_trait" : {
+      "vopal" : 10
+    }
+  },
+  "10002" : {
+    "attack_damage" : 200,
+    "attach_speed" : 0.7,
+    "visual_props" : {
+      "motion_id" : 2,
+      "color" : {
+        "red" : 0,
+        "green" : 255,
+        "blue" : 0
+      }
+    }
+  },
+  "10003" : {
+    "attack_damage" : 150,
+    "attach_speed" : 1.2,
+    "visual_props" : {
+      "motion_id" : 3,
+      "color" : {
+        "red" : 0,
+        "green" : 0,
+        "blue" : 255
+      }
+    },
+    "additional_trait" : {
+      "energy_drain" : 20
+    }
+  }
+}

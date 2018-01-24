@@ -1,0 +1,104 @@
+{
+  "MyFire1" : {
+    "Name" : "MyFire1",
+    "Context" : "Game",
+    "Tags" : "SomeTag,SavingData",
+    "Components" : {
+      "Name" : {
+        "Value" : "MyFire1"
+      },
+      "Fire" : {
+        "Strength" : 1
+      },
+      "Position2D" : {
+        "X" : 0,
+        "Y" : 0
+      }
+    }
+  },
+  "MyFire2" : {
+    "Name" : "MyFire2",
+    "Context" : "Game",
+    "Tags" : "SomeTag,SavingData",
+    "Components" : {
+      "Name" : {
+        "Value" : "MyFire2"
+      },
+      "Fire" : {
+        "Strength" : 2
+      },
+      "Position2D" : {
+        "X" : 0,
+        "Y" : 0
+      }
+    }
+  },
+  "MyFire3" : {
+    "Name" : "MyFire3",
+    "Context" : "Game",
+    "Tags" : "SomeTag,SavingData",
+    "Components" : {
+      "Name" : {
+        "Value" : "MyFire3"
+      },
+      "Fire" : {
+        "Strength" : 3
+      },
+      "Position2D" : {
+        "X" : 0,
+        "Y" : 0
+      }
+    }
+  },
+  "MyFire4" : {
+    "Name" : "MyFire4",
+    "Context" : "Game",
+    "Tags" : "SomeTag,SavingData",
+    "Components" : {
+      "Name" : {
+        "Value" : "MyFire4"
+      },
+      "Fire" : {
+        "Strength" : 4
+      },
+      "Position2D" : {
+        "X" : 0,
+        "Y" : 0
+      }
+    }
+  },
+  "MyFire5" : {
+    "Name" : "MyFire5",
+    "Context" : "Game",
+    "Tags" : "SomeTag,SavingData",
+    "Components" : {
+      "Name" : {
+        "Value" : "MyFire5"
+      },
+      "Fire" : {
+        "Strength" : 5
+      },
+      "Position2D" : {
+        "X" : 0,
+        "Y" : 0
+      }
+    }
+  },
+  "MyFire6" : {
+    "Name" : "MyFire6",
+    "Context" : "Game",
+    "Tags" : "SomeTag,SavingData",
+    "Components" : {
+      "Name" : {
+        "Value" : "MyFire6"
+      },
+      "Fire" : {
+        "Strength" : 6
+      },
+      "Position2D" : {
+        "X" : 0,
+        "Y" : 0
+      }
+    }
+  }
+}

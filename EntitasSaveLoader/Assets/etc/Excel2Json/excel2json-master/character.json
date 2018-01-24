@@ -1,0 +1,26 @@
+{
+  "1" : {
+    "weapon_id" : 10001,
+    "armor_id" : 20001,
+    "boots_id" : 1,
+    "dress_id" : 1,
+    "default_name" : "Yoda",
+    "speech_text" : "There is no try"
+  },
+  "2" : {
+    "weapon_id" : 10002,
+    "armor_id" : 20002,
+    "boots_id" : 1,
+    "dress_id" : 2,
+    "default_name" : "Solo",
+    "speech_text" : "I Know"
+  },
+  "3" : {
+    "weapon_id" : 10003,
+    "armor_id" : 20003,
+    "boots_id" : 1,
+    "dress_id" : 3,
+    "default_name" : "Vadar",
+    "speech_text" : "I'm Your Father"
+  }
+}
