@@ -1,4 +1,4 @@
-# EntitasSaveLoader v0.6
+# EntitasSaveLoader v0.6.1
 can save/load entity info with Json file.
 
 https://www.youtube.com/watch?v=TzMSpb3g7_A&feature=youtu.be
@@ -6,6 +6,12 @@ https://www.youtube.com/watch?v=TzMSpb3g7_A&feature=youtu.be
 https://github.com/sschmid/Entitas-CSharp
 
 this is still experimental.
+
+
+## version v0.6.1
+added excel2Json.
+
+can read multiple template group.
 
 ## version v0.6
 support templete name.
